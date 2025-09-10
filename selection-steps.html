@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUSCO Gene Selection Steps</title>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            color: #2E8B57;
+            margin-bottom: 40px;
+        }
+
+        .description {
+            text-align: center;
+            margin-bottom: 60px;
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-number {
+            background-color: #2E8B57;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-title {
+            color: #2E8B57;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .step-content {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .criteria-boxes {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .criteria-title {
+            color: #2E8B57;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+        }
+
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .criteria-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .criteria-box h3 {
+            color: #2E8B57;
+            margin-bottom: 15px;
+        }
+
+        .criteria-box p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .learn-more {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .learn-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background-color: transparent;
+            border: 2px solid #2E8B57;
+            color: #2E8B57;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .learn-more-btn:hover {
+            background-color: #2E8B57;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Selection and Validation of TUSCO Genes</h1>
+        <p class="description">
+            Our rigorous multi-step process ensures that TUSCO genes provide a reliable standard for evaluating transcript identification in long-read RNA sequencing.
+        </p>
+
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Candidate Gene Selection</div>
+                </div>
+                <div class="step-content">
+                    Genes must have a single annotated isoform with identical splice sites, transcription start sites (TSS), and transcription termination sites (TTS) across multiple annotation databases.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Annotation Consistency Validation</div>
+                </div>
+                <div class="step-content">
+                    Validation using GENCODE12 and RefSeq13 databases.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Alternative Splicing Check</div>
+                </div>
+                <div class="step-content">
+                    Filtering process to exclude genes with potential unannotated splice sites.
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Expression Analysis</div>
+                </div>
+                <div class="step-content">
+                    Assessment of broad expression across tissues using data from GTEx, ENCODE, and HRT Atlas.
+                </div>
+            </div>
+        </div>
+
+        <div class="criteria-boxes">
+            <h2 class="criteria-title">Selection Criteria</h2>
+            <div class="criteria-grid">
+                <div class="criteria-box">
+                    <h3>Single Isoform</h3>
+                    <p>Genes must have only one annotated transcript to ensure unambiguous benchmarking.</p>
+                </div>
+                <div class="criteria-box">
+                    <h3>Identical Splice Sites</h3>
+                    <p>All exon-intron boundaries must be consistent across annotation databases.</p>
+                </div>
+                <div class="criteria-box">
+                    <h3>Consistent TSS & TTS</h3>
+                    <p>Transcription start and termination sites must be identical across databases.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="learn-more">
+            <a href="#" class="learn-more-btn">
+                <span>ℹ️</span>
+                Learn More About Selection Process
+            </a>
+        </div>
+    </div>
+</body>
+</html>

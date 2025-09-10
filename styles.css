@@ -1,0 +1,62 @@
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 60px;  /* Increased gap for more even spacing */
+    margin: 40px auto;
+    max-width: 1200px;
+    padding: 20px;
+    align-items: start;  /* Ensure all columns start from the same height */
+}
+
+.step {
+    position: relative;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%;  /* Ensure all boxes have the same height */
+    display: flex;
+    flex-direction: column;
+}
+
+.step-number {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    width: 30px;
+    height: 30px;
+    background-color: #2E8B57;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-title {
+    margin-top: 20px;  /* Add space for the number */
+    margin-bottom: 15px;
+    color: #2E8B57;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.step-content {
+    flex-grow: 1;  /* Allow content to fill available space */
+    color: #666;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+/* Add connecting lines between steps */
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -30px;  /* Half of the gap */
+    width: 60px;  /* Same as gap */
+    height: 2px;
+    background-color: #2E8B57;
+    transform: translateY(-50%);
+}
