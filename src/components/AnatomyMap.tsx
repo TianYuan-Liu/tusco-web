@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { linkSvgTextLabels, normalizeLabel } from '../utils/svgTextLinker';
 
 type Species = 'human' | 'mouse';
 
@@ -16,29 +17,22 @@ interface AnatomyMapProps {
   tissues: TissueData[];
 }
 
-// Normalize tissue name according to the specified rules
-const normalizeName = (value: string): string => {
-  return value
-    .toLowerCase()
-    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-    .replace(/[^a-z0-9\s-]/g, '') // Remove punctuation except hyphens
-    .trim();
-};
-
-// Create a normalized filename-friendly version of the tissue name
-const createFilenameFriendlyName = (value: string): string => {
-  return value
-    .toLowerCase()
-    .replace(/\s+/g, '_') // Replace spaces with underscores
-    .replace(/[^a-z0-9_-]/g, '') // Remove other punctuation except hyphens and underscores
-    .trim();
-};
-
-// Extract base tissue name from compound names (e.g., "Kidney - Cortex/Medulla" -> "kidney")
-const getBaseTissueName = (normalizedLabel: string): string => {
-  // Split on hyphen and take the first part (e.g., "Heart - Left Ventricle" -> "heart")
-  const parts = normalizedLabel.split(' - ');
-  return parts[0].trim();
+// Helper to derive available slugs from server-provided tissue list
+const buildAvailableSlugSet = (species: Species, tissues: TissueData[]): Set<string> => {
+  const set = new Set<string>();
+  const prefix = `tusco_${species}_`;
+  const addFromName = (name?: string) => {
+    if (!name) return;
+    if (!name.endsWith('.tsv')) return;
+    if (!name.startsWith(prefix)) return;
+    const slug = name.replace(prefix, '').replace(/\.tsv$/i, '');
+    if (slug) set.add(slug);
+  };
+  for (const t of tissues) {
+    addFromName(t.originalFile);
+    addFromName(t.filename);
+  }
+  return set;
 };
 
 const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
@@ -68,103 +62,118 @@ const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
 
   useEffect(() => {
     if (!svgMarkup || !containerRef.current) return;
-
     const container = containerRef.current;
+    const svg = container.querySelector('svg') as SVGSVGElement | null;
+    if (!svg) return;
 
-    // Enhance interactivity: mark all SVG text nodes as clickable
-    const applyInteractiveStyles = () => {
-      try {
-        const texts = container.querySelectorAll('svg text');
-        texts.forEach((el) => {
-          (el as SVGTextElement).style.cursor = 'pointer';
-          (el as SVGTextElement).style.userSelect = 'none' as any;
-        });
-      } catch (e) {
-        // best effort styling
-      }
+    const available = buildAvailableSlugSet(species, tissues);
+    // Build alias map: map normalized label variants -> known slugs from available files
+    const alias = new Map<string, string>();
+    const prefix = `tusco_${species}_`;
+    const getSlugFromName = (name?: string) =>
+      name && name.startsWith(prefix) && name.endsWith('.tsv')
+        ? name.slice(prefix.length, -4)
+        : undefined;
+
+    const addAlias = (labelVariant: string, slug: string | undefined) => {
+      if (!slug) return;
+      const norm = normalizeLabel(labelVariant);
+      if (!norm) return;
+      alias.set(norm, slug);
     };
 
-    // Find the best matching tissue for a given label
-    const findMatchForLabel = (rawLabel: string): TissueData | undefined => {
-      const normalizedLabel = normalizeName(rawLabel);
-      if (!normalizedLabel) return undefined;
+    for (const t of tissues) {
+      const slug = getSlugFromName(t.originalFile) || getSlugFromName(t.filename);
+      if (!slug) continue;
+      const normName = normalizeLabel(t.tissueName);
+      addAlias(normName, slug);
 
-      // 1. Try exact match first
-      let match = tissues.find((t) => normalizeName(t.tissueName) === normalizedLabel);
-      if (match) return match;
-
-      // 2. Try base tissue match for compound labels (e.g., "Kidney - Cortex" -> "kidney")
-      const baseTissue = getBaseTissueName(normalizedLabel);
-      if (baseTissue !== normalizedLabel) {
-        match = tissues.find((t) => normalizeName(t.tissueName) === baseTissue);
-        if (match) return match;
+      // Variant: swap "X of Y" -> "Y - X"
+      if (normName.includes(' of ')) {
+        const [left, right] = normName.split(' of ');
+        if (left && right) addAlias(`${right} - ${left}`, slug);
       }
+      // Variant: "<organ> mucosa" -> "<organ> - mucosa"
+      if (normName.endsWith(' mucosa')) {
+        const organ = normName.replace(/\s*mucosa$/, '').trim();
+        if (organ) addAlias(`${organ} - mucosa`, slug);
+      }
+      // Variant: "<nerve> <region>" -> "nerve - <region>"
+      if (normName.endsWith(' nerve')) {
+        const region = normName.replace(/\s*nerve$/, '').trim();
+        if (region) addAlias(`nerve - ${region}`, slug);
+      }
+      if (normName.startsWith('tibial ') && normName.includes(' nerve')) {
+        addAlias('nerve - tibial', slug);
+      }
+      // Common GTEx-to-dataset mappings
+      addAlias('muscle - skeletal', getSlugFromName('tusco_human_skeletal_muscle_tissue.tsv'));
+      addAlias('bladder', getSlugFromName('tusco_human_urinary_bladder.tsv'));
+      addAlias('prostate', getSlugFromName('tusco_human_prostate_gland.tsv'));
+      addAlias('thyroid', getSlugFromName('tusco_human_thyroid_gland.tsv'));
+      addAlias('adipose - subcutaneous', getSlugFromName('tusco_human_subcutaneous_adipose_tissue.tsv'));
+      addAlias('adipose - visceral/omentum', getSlugFromName('tusco_human_omental_fat_pad.tsv'));
+      addAlias('small intestine - terminal ileum', getSlugFromName('tusco_human_small_intestine.tsv'));
+      addAlias('heart-atrial appendage', getSlugFromName('tusco_human_right_atrium_auricular_region.tsv'));
+      addAlias('esophagus - muscularis', getSlugFromName('tusco_human_esophagus.tsv'));
+      // Map brain subregions to general brain dataset if present
+      const brainSlug = getSlugFromName('tusco_human_brain.tsv');
+      if (brainSlug) {
+        [
+          'amygdala',
+          'hypothalamus',
+          'hippocampus',
+          'anterior cingulate cortex ba24',
+          'putamen basal ganglia',
+          'caudate basal ganglia',
+          'nucleus accumbens basal ganglia',
+          'substantia nigra'
+        ].forEach((labelVar) => addAlias(labelVar, brainSlug));
+        // BA9 maps better to dorsolateral prefrontal cortex if present
+        const dlpfc = getSlugFromName('tusco_human_dorsolateral_prefrontal_cortex.tsv');
+        if (dlpfc) addAlias('cortexfrontal cortex ba9', dlpfc);
+      }
+    }
 
-      // 3. Try substring match (either direction)
-      match = tissues.find((t) => {
-        const normalizedTissueName = normalizeName(t.tissueName);
-        return normalizedTissueName.includes(normalizedLabel) || normalizedLabel.includes(normalizedTissueName);
-      });
-      
-      return match;
-    };
+    // The linker only wraps <text> with <a>; no other DOM/style changes.
+    linkSvgTextLabels(svg, species, available, alias);
 
-    const handleClick = (ev: MouseEvent) => {
+    // Intercept anchor clicks within the SVG to force download in dev (port 3000)
+    const handleAnchorClick = async (ev: MouseEvent) => {
       const target = ev.target as Element | null;
       if (!target) return;
+      const anchor = target.closest('a') as Element | null;
+      if (!anchor) return;
+      // Only handle anchors inside our container's SVG
+      if (!container.contains(anchor)) return;
+      const href = anchor.getAttribute('href') || (anchor as any).href || anchor.getAttribute('xlink:href');
+      if (!href) return;
+      const downloadName = anchor.getAttribute('download') || '';
 
-      // Try direct text element content
-      const getLabelFromElement = (elem: Element | null): string => {
-        if (!elem) return '';
-        const text = (elem.textContent || '').trim();
-        if (text) return text;
-        // If a group is clicked, try to find a text node inside
-        const groupText = elem.querySelector('text');
-        return (groupText?.textContent || '').trim();
-      };
-
-      let label = '';
-      if (target.tagName.toLowerCase() === 'text') {
-        label = getLabelFromElement(target);
-      } else {
-        // If clicked on a shape near a label, try nearest text or group
-        const nearestText = target.closest('text') as Element | null;
-        if (nearestText) {
-          label = getLabelFromElement(nearestText);
-        } else {
-          const group = target.closest('g');
-          label = getLabelFromElement(group as Element | null);
-        }
+      // Prevent navigation; fetch and trigger a download programmatically
+      ev.preventDefault();
+      try {
+        const res = await fetch(href);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        // Use a transient anchor outside the SVG; does not affect SVG layout/styles
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        if (downloadName) a.download = downloadName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      } catch (e) {
+        // As a fallback, allow normal navigation
+        window.location.href = href;
       }
-
-      if (!label) {
-        console.log('No label found for click event');
-        return;
-      }
-
-      const match = findMatchForLabel(label);
-      if (!match) {
-        console.log(`No matching tissue found for label: ${label}`);
-        return;
-      }
-
-      // Create the friendly filename according to specifications
-      const friendlyFilename = `tusco_${species}_${createFilenameFriendlyName(match.tissueName)}.tsv`;
-
-      const link = document.createElement('a');
-      link.href = `/data/${species}/${match.originalFile}`;
-      link.download = friendlyFilename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     };
 
-    container.addEventListener('click', handleClick);
-    // styles after the SVG is in the DOM
-    requestAnimationFrame(applyInteractiveStyles);
-
+    container.addEventListener('click', handleAnchorClick);
     return () => {
-      container.removeEventListener('click', handleClick);
+      container.removeEventListener('click', handleAnchorClick);
     };
   }, [svgMarkup, tissues, species]);
 
@@ -191,5 +200,3 @@ const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
 };
 
 export default AnatomyMap;
-
-
