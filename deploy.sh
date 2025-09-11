@@ -71,7 +71,13 @@ if [ ! -d ".git" ]; then
     git clone https://github.com/TianYuan-Liu/tusco-web.git .
 else
     print_status "Updating repository..."
-    git pull origin main
+    # Ensure we're on the expected default branch and pull latest
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    if [ "$CURRENT_BRANCH" != "master" ]; then
+        git checkout master || true
+    fi
+    git fetch origin master
+    git pull origin master
 fi
 
 # Install dependencies

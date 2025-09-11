@@ -1,0 +1,101 @@
+{
+  "timestamp": "2025-09-11T11:35:04.226Z",
+  "summary": {
+    "human": {
+      "totalLinks": 0,
+      "validLinks": 0,
+      "missingFiles": 0,
+      "invalidFiles": 0,
+      "extraFiles": 37
+    },
+    "mouse": {
+      "totalLinks": 0,
+      "validLinks": 0,
+      "missingFiles": 0,
+      "invalidFiles": 0,
+      "extraFiles": 15
+    }
+  },
+  "details": {
+    "human": {
+      "species": "human",
+      "svgPath": "/Users/tianyuan/Desktop/github_dev/tusco-web/data/human_body_map.svg",
+      "processingMode": "static",
+      "totalLinks": 0,
+      "validLinks": 0,
+      "missingFiles": [],
+      "invalidFiles": [],
+      "extraFiles": [
+        "tusco_human_adipose_tissue.tsv",
+        "tusco_human_adrenal_gland.tsv",
+        "tusco_human_ascending_aorta.tsv",
+        "tusco_human_body_of_pancreas.tsv",
+        "tusco_human_brain.tsv",
+        "tusco_human_cerebellum.tsv",
+        "tusco_human_dorsolateral_prefrontal_cortex.tsv",
+        "tusco_human_esophagus.tsv",
+        "tusco_human_esophagus_mucosa.tsv",
+        "tusco_human_frontal_cortex.tsv",
+        "tusco_human_heart.tsv",
+        "tusco_human_heart_left_ventricle.tsv",
+        "tusco_human_kidney.tsv",
+        "tusco_human_liver.tsv",
+        "tusco_human_lung.tsv",
+        "tusco_human_muscle_of_leg.tsv",
+        "tusco_human_omental_fat_pad.tsv",
+        "tusco_human_ovary.tsv",
+        "tusco_human_pancreas.tsv",
+        "tusco_human_placenta.tsv",
+        "tusco_human_prostate_gland.tsv",
+        "tusco_human_right_atrium_auricular_region.tsv",
+        "tusco_human_right_lobe_of_liver.tsv",
+        "tusco_human_skeletal_muscle_tissue.tsv",
+        "tusco_human_small_intestine.tsv",
+        "tusco_human_spleen.tsv",
+        "tusco_human_stomach.tsv",
+        "tusco_human_subcutaneous_adipose_tissue.tsv",
+        "tusco_human_temporal_lobe.tsv",
+        "tusco_human_testis.tsv",
+        "tusco_human_thoracic_aorta.tsv",
+        "tusco_human_thyroid_gland.tsv",
+        "tusco_human_tibial_nerve.tsv",
+        "tusco_human_transverse_colon.tsv",
+        "tusco_human_upper_lobe_of_left_lung.tsv",
+        "tusco_human_urinary_bladder.tsv",
+        "tusco_human_vagina.tsv"
+      ],
+      "linkDetails": [],
+      "textElements": [],
+      "hasTextElements": false
+    },
+    "mouse": {
+      "species": "mouse",
+      "svgPath": "/Users/tianyuan/Desktop/github_dev/tusco-web/data/mouse_body_map.svg",
+      "processingMode": "static",
+      "totalLinks": 0,
+      "validLinks": 0,
+      "missingFiles": [],
+      "invalidFiles": [],
+      "extraFiles": [
+        "tusco_mouse_brain.tsv",
+        "tusco_mouse_forebrain.tsv",
+        "tusco_mouse_heart.tsv",
+        "tusco_mouse_hindbrain.tsv",
+        "tusco_mouse_kidney.tsv",
+        "tusco_mouse_limb.tsv",
+        "tusco_mouse_liver.tsv",
+        "tusco_mouse_lung.tsv",
+        "tusco_mouse_midbrain.tsv",
+        "tusco_mouse_olfactory_bulb.tsv",
+        "tusco_mouse_placenta.tsv",
+        "tusco_mouse_spleen.tsv",
+        "tusco_mouse_stomach.tsv",
+        "tusco_mouse_testis.tsv",
+        "tusco_mouse_thymus.tsv"
+      ],
+      "linkDetails": [],
+      "textElements": [],
+      "hasTextElements": false
+    }
+  }
+}

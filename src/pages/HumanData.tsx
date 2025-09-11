@@ -3,7 +3,6 @@ import { Container, Typography, Box, Skeleton, Card, CardContent, Divider } from
 import { motion } from 'framer-motion';
 import TissueDownloadGrid from '../components/TissueDownloadGrid';
 import StorageIcon from '@mui/icons-material/Storage';
-import AnatomyMap from '../components/AnatomyMap';
 
 interface TissueData {
   tissueName: string;
@@ -151,7 +150,6 @@ const HumanData = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <AnatomyMap species="human" tissues={tissues} />
             <TissueDownloadGrid tissues={tissues} species="human" />
           </motion.div>
         )}

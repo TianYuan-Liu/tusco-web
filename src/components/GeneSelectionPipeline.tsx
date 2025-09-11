@@ -135,8 +135,8 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
     {
       label: 'Multi-source Annotation Integration',
       description: species === 'human' 
-        ? 'Retrieval and harmonization of GENCODE v49, RefSeq GRCh38.p14, and MANE v1.4 annotations with Ensembl BioMart mapping'
-        : 'Integration of GENCODE vM38 and RefSeq GRCm39 with corresponding Ensembl BioMart mapping',
+        ? 'Retrieval and harmonization of gene annotations with Ensembl BioMart mapping'
+        : 'Integration of gene annotations with corresponding Ensembl BioMart mapping',
       content: (
         <Box sx={{ mt: 2, width: '100%' }}>
           <Paper 
@@ -160,7 +160,7 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
                 >
                   <CardContent>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                      {species === 'human' ? 'GENCODE v49' : 'GENCODE vM38'}
+                      {species === 'human' ? 'GENCODE' : 'GENCODE'}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Comprehensive gene annotation with high-quality manual curation and computational predictions.
@@ -181,7 +181,7 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
                 >
                   <CardContent>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                      {species === 'human' ? 'RefSeq GRCh38.p14' : 'RefSeq GRCm39'}
+                      {species === 'human' ? 'RefSeq' : 'RefSeq'}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       NCBI's curated reference sequences providing standardized gene annotations.
@@ -202,7 +202,7 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
                 >
                   <CardContent>
                     <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-                      {species === 'human' ? 'MANE Select v1.4' : 'Ensembl BioMart'}
+                      {species === 'human' ? 'MANE' : 'Ensembl BioMart'}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {species === 'human' 
@@ -247,7 +247,7 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
     {
       label: 'Population-Level Alternative Splicing & TSS Screening',
       description: species === 'human' 
-        ? 'Screening for alternative splicing using recount3 junction data and TSS validation with refTSS v4.1, plus IntroVerse filtering'
+        ? 'Screening for alternative splicing using recount3 junction data and TSS validation'
         : 'Alternative splicing screening with recount3 and TSS validation using refTSS for single-exon genes',
       content: (
         <Box sx={{ mt: 2, width: '100%' }}>
@@ -301,21 +301,10 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
                       variant="outlined" 
                       sx={{ fontWeight: 500 }} 
                     />
-                    {species === 'human' && (
-                      <Chip 
-                        label="IntroVerse filtering" 
-                        sx={{ 
-                          fontWeight: 500, 
-                          borderColor: theme.palette.info.main,
-                          color: theme.palette.info.main
-                        }} 
-                        variant="outlined" 
-                      />
-                    )}
                   </Box>
                   <Typography variant="body2" color="text.secondary" paragraph>
                     {species === 'human' 
-                      ? 'Single-exon genes require exon-overlap check and ±300bp CAGE window validation. Multi-exon genes use ±300bp window. IntroVerse filters genes with &gt;80% novel isoform usage.'
+                      ? 'Single-exon genes require exon-overlap check and ±300bp CAGE window validation. Multi-exon genes use ±300bp window.'
                       : 'Single-exon genes undergo exon-overlap validation using refTSS intervals.'
                     }
                   </Typography>
@@ -376,16 +365,6 @@ const GeneSelectionPipeline: React.FC<GeneSelectionPipelineProps> = ({ species =
                         </li>
                       )}
                     </ul>
-                    {species === 'human' && (
-                      <>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 600, mt: 2 }}>
-                          IntroVerse Filtering:
-                        </Typography>
-                        <Typography variant="body2" paragraph>
-                          Remove genes with &gt;80% novel isoform usage in population data
-                        </Typography>
-                      </>
-                    )}
                   </Box>
                 )}
                 sx={{ mt: 2 }}

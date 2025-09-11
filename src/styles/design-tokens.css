@@ -1,0 +1,181 @@
+/* TUSCO Design Tokens */
+/* Brand colors extracted from logo: #15918A (teal), #EE446F (pink) */
+
+:root {
+  /* Primary Brand Colors */
+  --color-primary-main: #15918A;
+  --color-primary-light: #4DB5AA;
+  --color-primary-dark: #0F6B66;
+  --color-primary-50: #f0fdfc;
+  --color-primary-100: #ccfbf1;
+  --color-primary-200: #99f6e4;
+  --color-primary-300: #5eedd8;
+  --color-primary-400: #2dd4bf;
+  --color-primary-500: #15918A;
+  --color-primary-600: #0F6B66;
+  --color-primary-700: #0a5e56;
+  --color-primary-800: #084c44;
+  --color-primary-900: #053e37;
+
+  /* Secondary Brand Colors (Pink accent from logo) */
+  --color-secondary-main: #EE446F;
+  --color-secondary-light: #f472a0;
+  --color-secondary-dark: #be185d;
+  --color-secondary-50: #fdf2f8;
+  --color-secondary-100: #fce7f3;
+  --color-secondary-200: #fbcfe8;
+  --color-secondary-300: #f9a8d4;
+  --color-secondary-400: #f472a0;
+  --color-secondary-500: #EE446F;
+  --color-secondary-600: #be185d;
+  --color-secondary-700: #9d174d;
+  --color-secondary-800: #831843;
+  --color-secondary-900: #701a75;
+
+  /* Neutral Colors */
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+
+  /* Semantic Colors */
+  --color-success-main: #059669;
+  --color-success-light: #10b981;
+  --color-success-dark: #047857;
+  --color-warning-main: #d97706;
+  --color-warning-light: #f59e0b;
+  --color-warning-dark: #b45309;
+  --color-error-main: #dc2626;
+  --color-error-light: #ef4444;
+  --color-error-dark: #b91c1c;
+  --color-info-main: #2EABA3;
+  --color-info-light: #5BBDB7;
+  --color-info-dark: #127A76;
+
+  /* Background Colors */
+  --color-bg-default: #f8fafc;
+  --color-bg-paper: #ffffff;
+  --color-bg-elevated: #ffffff;
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #64748b;
+  --color-text-disabled: #94a3b8;
+  --color-text-inverse: #ffffff;
+
+  /* Border Colors */
+  --color-border-default: rgba(15, 23, 42, 0.08);
+  --color-border-muted: rgba(15, 23, 42, 0.06);
+  --color-border-strong: rgba(15, 23, 42, 0.12);
+
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(15, 23, 42, 0.1), 0 1px 2px -1px rgba(15, 23, 42, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+
+  /* Typography */
+  --font-family-primary: "Inter", "Source Sans Pro", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+  --font-family-mono: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+
+  /* Spacing (rem units) */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;  /* 6px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-full: 9999px;
+
+  /* Animation */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-base: 0.2s ease-in-out;
+  --transition-slow: 0.3s ease-in-out;
+}
+
+/* Dark Mode */
+.dark {
+  /* Primary Brand Colors (adjusted for dark mode) */
+  --color-primary-main: #4DB5AA;
+  --color-primary-light: #5BBDB7;
+  --color-primary-dark: #15918A;
+
+  /* Secondary Brand Colors (adjusted for dark mode) */
+  --color-secondary-main: #f472a0;
+  --color-secondary-light: #f9a8d4;
+  --color-secondary-dark: #EE446F;
+
+  /* Background Colors */
+  --color-bg-default: #0f172a;
+  --color-bg-paper: #1e293b;
+  --color-bg-elevated: #334155;
+
+  /* Text Colors */
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #94a3b8;
+  --color-text-disabled: #64748b;
+  --color-text-inverse: #0f172a;
+
+  /* Border Colors */
+  --color-border-default: rgba(248, 250, 252, 0.08);
+  --color-border-muted: rgba(248, 250, 252, 0.06);
+  --color-border-strong: rgba(248, 250, 252, 0.12);
+
+  /* Shadow Colors (darker for dark mode) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+}
+
+/* Accessibility Features */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0s;
+    --transition-base: 0s;
+    --transition-slow: 0s;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border-default: rgba(15, 23, 42, 0.2);
+    --color-border-muted: rgba(15, 23, 42, 0.15);
+    --color-border-strong: rgba(15, 23, 42, 0.3);
+  }
+  
+  .dark {
+    --color-border-default: rgba(248, 250, 252, 0.2);
+    --color-border-muted: rgba(248, 250, 252, 0.15);
+    --color-border-strong: rgba(248, 250, 252, 0.3);
+  }
+}
+
+/* Focus styles for accessibility */
+.focus-visible {
+  outline: 2px solid var(--color-primary-main);
+  outline-offset: 2px;
+}
