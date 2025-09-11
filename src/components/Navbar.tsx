@@ -76,8 +76,7 @@ const Navbar = () => {
           >
             {[
               { path: '/', label: 'Home' },
-              { path: '/human', label: 'Human Data' },
-              { path: '/mouse', label: 'Mouse Data' },
+              { path: '/downloads', label: 'Downloads' },
               { path: '/pipeline', label: 'Pipeline' },
             ].map(({ path, label }) => (
               <motion.div

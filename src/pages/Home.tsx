@@ -134,7 +134,7 @@ const Home = () => {
                 <Button
                   variant="contained"
                   size="large"
-                  onClick={() => navigate('/human')}
+                  onClick={() => navigate('/downloads/human')}
                   endIcon={<ArrowForwardIcon />}
                   sx={{
                     backgroundColor: '#15918A',
@@ -161,7 +161,7 @@ const Home = () => {
                 <Button
                   variant="outlined"
                   size="large"
-                  onClick={() => navigate('/mouse')}
+                  onClick={() => navigate('/downloads/mouse')}
                   endIcon={<ArrowForwardIcon />}
                   sx={{
                     color: '#15918A',
@@ -307,9 +307,7 @@ const Home = () => {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 viewport={{ once: true, amount: 0.2 }}
               >
-                <Typography variant="body1" sx={{ mb: 3, fontSize: '1.1rem', lineHeight: 1.8 }}>
-                  For human datasets, TUSCO integrates GENCODE v49, RefSeq GRCh38.p14, and MANE v1.4 with IntroVerse filtering for population-level isoform usage. Mouse analysis uses GENCODE vM38 and RefSeq GRCm39 with corresponding validation pipelines.
-                </Typography>
+                
                 <Typography variant="body1" sx={{ maxWidth: 800, mx: 'auto' }}>
                   The final curated sets provide <strong>53 human</strong> and <strong>37 mouse</strong> TUSCO genes that serve as internal reference standards. The pipeline records detailed filtering decisions and produces synchronized mapping subsets alongside GTF files, enabling reproducible benchmarking of transcriptome reconstruction methods.
                 </Typography>

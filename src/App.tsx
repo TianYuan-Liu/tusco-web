@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import HumanData from './pages/HumanData';
-import MouseData from './pages/MouseData';
+// Removed separate Human/Mouse pages in favor of unified Downloads
+import Downloads from './pages/Downloads';
 import PipelinePage from './pages/PipelinePage';
 
 // Academic and professional theme configuration
@@ -318,8 +318,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/human" element={<HumanData />} />
-          <Route path="/mouse" element={<MouseData />} />
+          {/* Removed routes for /human and /mouse */}
+          <Route path="/downloads" element={<Navigate to="/downloads/human" replace />} />
+          <Route path="/downloads/:species" element={<Downloads />} />
           <Route path="/pipeline" element={<PipelinePage />} />
         </Routes>
       </Router>
