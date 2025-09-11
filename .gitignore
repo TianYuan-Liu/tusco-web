@@ -85,7 +85,8 @@ dist
 
 # Gatsby files
 .cache/
-public
+# Note: We version `public/` in this project (not a Gatsby build dir)
+#public
 
 # Storybook build outputs
 .out

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <!-- Genomics of Gene Expression Lab Logo -->
+  <text x="0" y="40" font-family="Arial" font-size="32" font-weight="400" fill="#333333">Genomics</text>
+  <rect x="225" y="15" width="70" height="25" fill="#f4a261" />
+  <rect x="300" y="15" width="70" height="25" fill="#ffd166" />
+  <text x="225" y="80" font-family="Arial" font-size="32" font-weight="400" fill="#333333">of Gene</text>
+  <rect x="0" y="85" width="210" height="25" fill="#2a9d8f" />
+  <text x="0" y="120" font-family="Arial" font-size="32" font-weight="400" fill="#333333">Expression Lab</text>
+</svg>

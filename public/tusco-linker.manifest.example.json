@@ -1,0 +1,13 @@
+{
+  "species": "human",
+  "svg": "/data/human_body_map.svg",
+  "notes": "Example only: runtime generates slugs from <text> labels and links to /data/{species}/tusco_{species}_{slug}.tsv. Special fallbacks: heart_left_ventricle; kidney cortex/medulla -> kidney.",
+  "overrides": {
+    "Heart - Left Ventricle": "heart_left_ventricle",
+    "Heart": "heart",
+    "Kidney - Cortex": "kidney",
+    "Kidney - Medulla": "kidney",
+    "Liver": "liver"
+  }
+}
+
