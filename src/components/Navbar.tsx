@@ -56,12 +56,16 @@ const Navbar = () => {
                 variant="h6"
                 component="div"
                 sx={{
-                  fontWeight: 600,
-                  color: '#0f172a',
+                  fontFamily: '"Poppins", "Inter", sans-serif',
+                  fontWeight: 800,
+                  background: 'linear-gradient(135deg, #15918A 0%, #0F6B66 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
-                  letterSpacing: '-0.01em',
-                  fontSize: { xs: '1.1rem', md: '1.25rem' }
+                  letterSpacing: '-0.02em',
+                  fontSize: { xs: '1.2rem', md: '1.5rem' }
                 }}
               >
                 TUSCO Database

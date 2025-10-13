@@ -106,34 +106,54 @@ const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
       if (normName.startsWith('tibial ') && normName.includes(' nerve')) {
         addAlias('nerve - tibial', slug);
       }
-      // Common GTEx-to-dataset mappings
-      addAlias('muscle - skeletal', getSlugFromName('tusco_human_skeletal_muscle_tissue.tsv'));
-      addAlias('bladder', getSlugFromName('tusco_human_urinary_bladder.tsv'));
-      addAlias('prostate', getSlugFromName('tusco_human_prostate_gland.tsv'));
-      addAlias('thyroid', getSlugFromName('tusco_human_thyroid_gland.tsv'));
-      addAlias('adipose - subcutaneous', getSlugFromName('tusco_human_subcutaneous_adipose_tissue.tsv'));
-      addAlias('adipose - visceral/omentum', getSlugFromName('tusco_human_omental_fat_pad.tsv'));
-      addAlias('small intestine - terminal ileum', getSlugFromName('tusco_human_small_intestine.tsv'));
-      addAlias('heart-atrial appendage', getSlugFromName('tusco_human_right_atrium_auricular_region.tsv'));
-      addAlias('esophagus - muscularis', getSlugFromName('tusco_human_esophagus.tsv'));
-      // Map brain subregions to general brain dataset if present
-      const brainSlug = getSlugFromName('tusco_human_brain.tsv');
-      if (brainSlug) {
-        [
-          'amygdala',
-          'hypothalamus',
-          'hippocampus',
-          'anterior cingulate cortex ba24',
-          'putamen basal ganglia',
-          'caudate basal ganglia',
-          'nucleus accumbens basal ganglia',
-          'substantia nigra'
-        ].forEach((labelVar) => addAlias(labelVar, brainSlug));
-        // BA9 maps better to dorsolateral prefrontal cortex if present
-        const dlpfc = getSlugFromName('tusco_human_dorsolateral_prefrontal_cortex.tsv');
-        if (dlpfc) addAlias('cortexfrontal cortex ba9', dlpfc);
-      }
     }
+
+    // SVG label → TSV file mappings based on comprehensive analysis
+    // Human tissue mappings
+    addAlias('artery - aorta', getSlugFromName('tusco_human_ascending_aorta.tsv'));
+    addAlias('artery - coronary', getSlugFromName('tusco_human_coronary_artery.tsv'));
+    addAlias('artery - tibial', getSlugFromName('tusco_human_tibial_artery.tsv'));
+    addAlias('breast - mammary tissue', getSlugFromName('tusco_human_breast_epithelium.tsv'));
+    addAlias('caudate basal ganglia', getSlugFromName('tusco_human_caudate_nucleus.tsv'));
+    addAlias('colon - sigmoid', getSlugFromName('tusco_human_sigmoid_colon.tsv'));
+    addAlias('colon - transverse', getSlugFromName('tusco_human_transverse_colon.tsv'));
+    addAlias('esophagus - gastroesophageal junction', getSlugFromName('tusco_human_gastroesophageal_sphincter.tsv'));
+    addAlias('esophagus - mucosa', getSlugFromName('tusco_human_esophagus_squamous_epithelium.tsv'));
+    addAlias('esophagus - muscularis', getSlugFromName('tusco_human_esophagus_muscularis_mucosa.tsv'));
+    addAlias('heart - left ventricle', getSlugFromName('tusco_human_left_ventricle_myocardium.tsv'));
+    addAlias('heart-atrial appendage', getSlugFromName('tusco_human_right_atrium_auricular_region.tsv'));
+    addAlias('hippocampus', getSlugFromName('tusco_human_Ammon\'s_horn.tsv'));
+    addAlias('kidney - cortex', getSlugFromName('tusco_human_cortex_of_kidney.tsv'));
+    addAlias('kidney - medulla', getSlugFromName('tusco_human_outer_medulla_of_kidney.tsv'));
+    addAlias('liver', getSlugFromName('tusco_human_right_lobe_of_liver.tsv'));
+    addAlias('lung', getSlugFromName('tusco_human_upper_lobe_of_left_lung.tsv'));
+    addAlias('minor salivary gland', getSlugFromName('tusco_human_anterior_lingual_gland.tsv'));
+    addAlias('muscle - skeletal', getSlugFromName('tusco_human_gastrocnemius_medialis.tsv'));
+    addAlias('nucleus accumbens basal ganglia', getSlugFromName('tusco_human_nucleus_accumbens.tsv'));
+    addAlias('pancreas', getSlugFromName('tusco_human_body_of_pancreas.tsv'));
+    addAlias('pituitary', getSlugFromName('tusco_human_pituitary_gland.tsv'));
+    addAlias('putamen basal ganglia', getSlugFromName('tusco_human_putamen.tsv'));
+    addAlias('skin - not sun exposed/suprapubic', getSlugFromName('tusco_human_suprapubic_skin.tsv'));
+    addAlias('skin - sun exposed/lower leg', getSlugFromName('tusco_human_lower_leg_skin.tsv'));
+    addAlias('spinal cord cervical c-1', getSlugFromName('tusco_human_C1_segment_of_cervical_spinal_cord.tsv'));
+    addAlias('whole blood', getSlugFromName('tusco_human_venous_blood.tsv'));
+    addAlias('anterior cingulate cortex ba24', getSlugFromName('tusco_human_anterior_cingulate_cortex.tsv'));
+    addAlias('cervix - ectocervix', getSlugFromName('tusco_human_ectocervix.tsv'));
+    addAlias('cervix - endocervix', getSlugFromName('tusco_human_endocervix.tsv'));
+    addAlias('nerve - tibial', getSlugFromName('tusco_human_tibial_nerve.tsv'));
+    addAlias('bladder', getSlugFromName('tusco_human_urinary_bladder.tsv'));
+    addAlias('prostate', getSlugFromName('tusco_human_prostate_gland.tsv'));
+    addAlias('thyroid', getSlugFromName('tusco_human_thyroid_gland.tsv'));
+    addAlias('adipose - subcutaneous', getSlugFromName('tusco_human_subcutaneous_adipose_tissue.tsv'));
+    addAlias('adipose - visceral/omentum', getSlugFromName('tusco_human_omental_fat_pad.tsv'));
+    addAlias('cells - cultured fibroblasts', getSlugFromName('tusco_human_fibroblast_derived_cell_line.tsv'));
+    addAlias('fallopian tube', getSlugFromName('tusco_human_fallopian_tube.tsv'));
+    addAlias('frontal cortex ba9', getSlugFromName('tusco_human_dorsolateral_prefrontal_cortex.tsv'));
+
+    // Mouse tissue mappings
+    addAlias('adipose tissues', getSlugFromName('tusco_mouse_adipose_tissue.tsv'));
+    addAlias('mammary gland', getSlugFromName('tusco_mouse_thoracic_mammary_gland.tsv'));
+    addAlias('skeletal muscle', getSlugFromName('tusco_mouse_skeletal_muscle_tissue.tsv'));
 
     // The linker only wraps <text> with <a>; no other DOM/style changes.
     linkSvgTextLabels(svg, species, available, alias);

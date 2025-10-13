@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Box, Grid, Paper, Tabs, Tab, Divider } from '@mui/material';
 import { motion } from 'framer-motion';
 import AnatomyMap from '../components/AnatomyMap';
+import BulkDownloadBox from '../components/BulkDownloadBox';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface TissueData {
@@ -107,6 +108,27 @@ const Downloads: React.FC = () => {
             <Grid container spacing={4}>
               <Grid item xs={12}>
                 <motion.div variants={itemVariants}>
+                  <Tabs
+                    value={speciesTab === 'human' ? 0 : 1}
+                    onChange={(_, v) => {
+                      const newSpecies = v === 0 ? 'human' : 'mouse';
+                      setSpeciesTab(newSpecies);
+                      navigate(`/downloads/${newSpecies}`);
+                    }}
+                    variant="fullWidth"
+                    sx={{ mb: 3 }}
+                  >
+                    <Tab label="Human" />
+                    <Tab label="Mouse" />
+                  </Tabs>
+
+                  {!loading && (
+                    <BulkDownloadBox
+                      species={speciesTab}
+                      tissueCount={speciesTab === 'human' ? humanTissues.length : mouseTissues.length}
+                    />
+                  )}
+
                   <Paper
                     elevation={0}
                     sx={{
@@ -115,67 +137,72 @@ const Downloads: React.FC = () => {
                       backgroundColor: 'var(--color-bg-paper)',
                     }}
                   >
-                    <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{
-                        mb: 1.5,
-                        color: 'var(--color-text-primary)',
-                        textAlign: 'center',
-                      }}
-                    >
-                      Interactive Data Exploration
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        mb: 3,
-                        color: 'var(--color-text-secondary)',
-                        lineHeight: 1.6,
-                        textAlign: 'center',
-                        maxWidth: 900,
-                        mx: 'auto',
-                      }}
-                    >
-                      Explore tissue-specific TUSCO gene expression across anatomy. Click labeled tissues to download TSV data files.
-                    </Typography>
-
-                    <Tabs
-                      value={speciesTab === 'human' ? 0 : 1}
-                      onChange={(_, v) => {
-                        const newSpecies = v === 0 ? 'human' : 'mouse';
-                        setSpeciesTab(newSpecies);
-                        navigate(`/downloads/${newSpecies}`);
-                      }}
-                      variant="fullWidth"
-                      sx={{ mb: 3 }}
-                    >
-                      <Tab label="Human" />
-                      <Tab label="Mouse" />
-                    </Tabs>
-
-                    <Divider sx={{ mb: 3 }} />
-
                     {speciesTab === 'human' ? (
                       <Box>
-                        <Typography variant="h5" sx={{ mb: 1.5, color: 'var(--color-text-primary)' }}>
-                          Human TUSCO Gene Distribution
-                        </Typography>
-                        <Typography variant="caption" sx={{ mb: 2, display: 'block', color: 'var(--color-text-secondary)' }}>
-                          {humanTissues.length} tissue datasets
-                        </Typography>
+                        <Box
+                          sx={{
+                            p: 2.5,
+                            mb: 3,
+                            backgroundColor: 'rgba(42, 157, 143, 0.04)',
+                            borderRadius: 2,
+                            borderLeft: '4px solid var(--color-primary)',
+                          }}
+                        >
+                          <Typography
+                            variant="h4"
+                            sx={{
+                              mb: 0.5,
+                              color: 'var(--color-text-primary)',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Human Tissue Data
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              color: 'var(--color-text-secondary)',
+                              fontSize: '0.95rem',
+                            }}
+                          >
+                            Click labeled tissues to download — {humanTissues.length} datasets available
+                          </Typography>
+                        </Box>
                         {!loading && (
                           <AnatomyMap species="human" tissues={humanTissues} />
                         )}
                       </Box>
                     ) : (
                       <Box>
-                        <Typography variant="h5" sx={{ mb: 1.5, color: 'var(--color-text-primary)' }}>
-                          Mouse TUSCO Gene Distribution
-                        </Typography>
-                        <Typography variant="caption" sx={{ mb: 2, display: 'block', color: 'var(--color-text-secondary)' }}>
-                          {mouseTissues.length} tissue datasets
-                        </Typography>
+                        <Box
+                          sx={{
+                            p: 2.5,
+                            mb: 3,
+                            backgroundColor: 'rgba(42, 157, 143, 0.04)',
+                            borderRadius: 2,
+                            borderLeft: '4px solid var(--color-primary)',
+                          }}
+                        >
+                          <Typography
+                            variant="h4"
+                            sx={{
+                              mb: 0.5,
+                              color: 'var(--color-text-primary)',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Mouse Tissue Data
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              color: 'var(--color-text-secondary)',
+                              fontSize: '0.95rem',
+                            }}
+                          >
+                            Click labeled tissues to download — {mouseTissues.length} datasets available
+                          </Typography>
+                        </Box>
                         {!loading && (
                           <AnatomyMap species="mouse" tissues={mouseTissues} />
                         )}

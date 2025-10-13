@@ -175,13 +175,26 @@ export function linkSvgTextLabels(
       }
 
       /* Region highlighting with subtle academic glow */
-      .tissue-region-highlighted { 
-        stroke: #2a9d8f; 
-        stroke-width: 1.5; 
+      .tissue-region-highlighted {
+        stroke: #2a9d8f;
+        stroke-width: 1.5;
         stroke-opacity: 0.9;
         fill-opacity: 0.95;
         filter: url(#regionGlow);
         transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Unavailable tissue styling - gray on hover */
+      text.svg-tissue-unavailable,
+      text.svg-tissue-unavailable tspan {
+        cursor: not-allowed;
+        transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      text.svg-tissue-unavailable:hover,
+      text.svg-tissue-unavailable:hover tspan {
+        fill: #9CA3AF !important;
+        opacity: 0.7;
       }
     `;
     svgRoot.insertBefore(styleEl, svgRoot.firstChild);
@@ -291,7 +304,17 @@ export function linkSvgTextLabels(
   }
 
   for (const textEl of texts) {
-    const label = (textEl.textContent || '').trim();
+    // Handle multi-line text with tspan elements properly
+    // If there are tspans, use the last one (most specific label)
+    // Otherwise use textContent
+    const tspans = textEl.querySelectorAll('tspan');
+    let label: string;
+    if (tspans.length > 0) {
+      // Use the last tspan which typically contains the most specific label
+      label = (tspans[tspans.length - 1].textContent || '').trim();
+    } else {
+      label = (textEl.textContent || '').trim();
+    }
     if (!label) continue;
 
     const candidates = candidateSlugsForLabel(label);
@@ -319,7 +342,11 @@ export function linkSvgTextLabels(
       chosen = candidates[0];
     }
 
-    if (!chosen) continue; // No match: leave untouched
+    if (!chosen) {
+      // No match found - mark as unavailable
+      textEl.classList.add('svg-tissue-unavailable');
+      continue;
+    }
 
     const file = `${prefix}${chosen}.tsv`;
     const href = `/data/${species}/${file}`;
