@@ -3,6 +3,7 @@ import { Container, Typography, Box, Grid, Paper, Tabs, Tab, Divider } from '@mu
 import { motion } from 'framer-motion';
 import AnatomyMap from '../components/AnatomyMap';
 import BulkDownloadBox from '../components/BulkDownloadBox';
+import UniversalGeneSetCard from '../components/UniversalGeneSetCard';
 import { useNavigate, useParams } from 'react-router-dom';
 
 interface TissueData {
@@ -127,6 +128,10 @@ const Downloads: React.FC = () => {
                       species={speciesTab}
                       tissueCount={speciesTab === 'human' ? humanTissues.length : mouseTissues.length}
                     />
+                  )}
+
+                  {!loading && (
+                    <UniversalGeneSetCard species={speciesTab} />
                   )}
 
                   <Paper
