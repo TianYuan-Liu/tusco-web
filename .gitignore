@@ -5,6 +5,8 @@ node_modules/
 
 # Production builds
 /build
+/build.next
+/build.prev
 
 # Runtime data
 pids

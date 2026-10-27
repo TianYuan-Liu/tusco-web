@@ -84,9 +84,14 @@ fi
 print_status "Installing dependencies..."
 npm ci --production
 
-# Build the React application
+# Build the React application next to the live one and swap only on success,
+# so a failed build leaves the running site untouched
 print_status "Building React application..."
-npm run build
+rm -rf build.next
+GENERATE_SOURCEMAP=false BUILD_PATH=build.next npm run build
+rm -rf build.prev
+if [ -d build ]; then mv build build.prev; fi
+mv build.next build
 
 # Create logs directory
 mkdir -p logs
