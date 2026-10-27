@@ -1,331 +1,105 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import Navbar from './components/Navbar';
+import React, { Suspense, lazy, useEffect, useMemo } from 'react';
+import { BrowserRouter as Router, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Alert, Box, Container, CssBaseline, LinearProgress, ThemeProvider } from '@mui/material';
+import useDarkMode from './hooks/useDarkMode';
+import { createAppTheme } from './theme';
+import { ReleaseProvider, useRelease, useReleaseLink } from './context/ReleaseContext';
+import SiteHeader from './components/SiteHeader';
+import SiteFooter from './components/SiteFooter';
 import Home from './pages/Home';
-// Removed separate Human/Mouse pages in favor of unified Downloads
+import Explore from './pages/Explore';
 import Downloads from './pages/Downloads';
-import PipelinePage from './pages/PipelinePage';
+import Method from './pages/Method';
+import Releases from './pages/Releases';
+import Cite from './pages/Cite';
 
-// Academic and professional theme configuration
-let theme = createTheme({
-  typography: {
-    fontFamily: '"Inter", "Source Sans Pro", "Roboto", "Helvetica Neue", "Arial", sans-serif',
-    h1: {
-      fontWeight: 700,
-      letterSpacing: '-0.025em',
-      fontSize: '2.5rem',
-    },
-    h2: {
-      fontWeight: 600,
-      letterSpacing: '-0.02em',
-      fontSize: '2rem',
-    },
-    h3: {
-      fontWeight: 600,
-      letterSpacing: '-0.015em',
-      fontSize: '1.5rem',
-    },
-    h4: {
-      fontWeight: 600,
-      fontSize: '1.25rem',
-      letterSpacing: '-0.01em',
-    },
-    h5: {
-      fontWeight: 600,
-      fontSize: '1.1rem',
-    },
-    h6: {
-      fontWeight: 600,
-      fontSize: '1rem',
-    },
-    button: {
-      fontWeight: 500,
-      textTransform: 'none',
-      letterSpacing: '0.01em',
-    },
-    body1: {
-      fontSize: '1rem',
-      lineHeight: 1.6,
-      letterSpacing: '0.00938em',
-    },
-    body2: {
-      fontSize: '0.875rem',
-      lineHeight: 1.5,
-      letterSpacing: '0.01071em',
-    },
-    caption: {
-      fontSize: '0.75rem',
-      lineHeight: 1.4,
-      letterSpacing: '0.03333em',
-      color: '#64748b',
-    },
-    subtitle1: {
-      fontSize: '1rem',
-      lineHeight: 1.5,
-      fontWeight: 500,
-      letterSpacing: '0.00938em',
-    },
-    subtitle2: {
-      fontSize: '0.875rem',
-      lineHeight: 1.4,
-      fontWeight: 500,
-      letterSpacing: '0.00714em',
-    },
-  },
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#15918A',
-      light: '#4DB5AA',
-      dark: '#0F6B66',
-      contrastText: '#ffffff',
-    },
-    secondary: {
-      main: '#64748b',
-      light: '#94a3b8',
-      dark: '#475569',
-      contrastText: '#ffffff',
-    },
-    info: {
-      main: '#2EABA3',
-      light: '#5BBDB7',
-      dark: '#127A76',
-      contrastText: '#ffffff',
-    },
-    background: {
-      default: '#f8fafc',
-      paper: '#ffffff',
-    },
-    text: {
-      primary: '#0f172a',
-      secondary: '#475569',
-    },
-    error: {
-      main: '#dc2626',
-      light: '#ef4444',
-      dark: '#b91c1c',
-    },
-    success: {
-      main: '#059669',
-      light: '#10b981',
-      dark: '#047857',
-    },
-    warning: {
-      main: '#d97706',
-      light: '#f59e0b',
-      dark: '#b45309',
-    },
-    divider: 'rgba(15, 23, 42, 0.08)',
-    grey: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
-    },
-  },
-  shape: {
-    borderRadius: 12,
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          scrollBehavior: 'smooth',
-          fontFeatureSettings: '"cv02", "cv03", "cv04", "cv11"',
-          fontVariantNumeric: 'lining-nums',
-          '&::-webkit-scrollbar': {
-            width: '6px',
-            height: '6px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(15, 23, 42, 0.15)',
-            borderRadius: '3px',
-            '&:hover': {
-              backgroundColor: 'rgba(15, 23, 42, 0.25)',
-            },
-          },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: 'rgba(15, 23, 42, 0.03)',
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: 'none',
-          borderRadius: 12,
-        },
-        elevation0: {
-          border: '1px solid rgba(15, 23, 42, 0.06)',
-        },
-        elevation1: {
-          boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.06)',
-          border: '1px solid rgba(15, 23, 42, 0.06)',
-        },
-        elevation2: {
-          boxShadow: '0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06)',
-          border: '1px solid rgba(15, 23, 42, 0.06)',
-        },
-        elevation3: {
-          boxShadow: '0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.06)',
-          border: '1px solid rgba(15, 23, 42, 0.06)',
-        },
-        elevation4: {
-          boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.06)',
-          border: '1px solid rgba(15, 23, 42, 0.06)',
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          padding: '10px 20px',
-          transition: 'all 0.2s ease-in-out',
-          fontWeight: 500,
-          textTransform: 'none',
-          fontSize: '0.875rem',
-          minHeight: '40px',
-        },
-        contained: {
-          boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.12)',
-          '&:hover': {
-            boxShadow: '0 4px 6px -1px rgba(15, 23, 42, 0.15)',
-            transform: 'translateY(-1px)',
-          },
-        },
-        outlined: {
-          borderWidth: '1px',
-          '&:hover': {
-            borderWidth: '1px',
-            transform: 'translateY(-1px)',
-          },
-        },
-        text: {
-          '&:hover': {
-            backgroundColor: 'rgba(15, 23, 42, 0.04)',
-          },
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          transition: 'all 0.2s ease-in-out',
-          border: '1px solid rgba(15, 23, 42, 0.06)',
-          '&:hover': {
-            transform: 'translateY(-2px)',
-            boxShadow: '0 4px 6px -1px rgba(15, 23, 42, 0.12)',
-          },
-        },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          borderRadius: 6,
-          fontWeight: 500,
-          fontSize: '0.8125rem',
-        },
-        colorPrimary: {
-          backgroundColor: 'rgba(21, 145, 138, 0.08)',
-          color: '#15918A',
-        },
-        colorSecondary: {
-          backgroundColor: 'rgba(100, 116, 139, 0.08)',
-          color: '#64748b',
-        },
-        colorInfo: {
-          backgroundColor: 'rgba(46, 171, 163, 0.08)',
-          color: '#2EABA3',
-        },
-      },
-    },
-    MuiDivider: {
-      styleOverrides: {
-        root: {
-          borderColor: 'rgba(15, 23, 42, 0.08)',
-        },
-      },
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          transition: 'all 0.15s ease-in-out',
-          '&:hover': {
-            backgroundColor: 'rgba(15, 23, 42, 0.06)',
-            transform: 'scale(1.05)',
-          },
-        },
-      },
-    },
-    MuiTooltip: {
-      styleOverrides: {
-        tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.9)',
-          borderRadius: 6,
-          fontSize: '0.75rem',
-          padding: '8px 12px',
-          backdropFilter: 'blur(8px)',
-        },
-      },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        h1: {
-          color: '#0f172a',
-        },
-        h2: {
-          color: '#0f172a',
-        },
-        h3: {
-          color: '#0f172a',
-        },
-        h4: {
-          color: '#0f172a',
-        },
-        h5: {
-          color: '#0f172a',
-        },
-        h6: {
-          color: '#0f172a',
-        },
-        body1: {
-          color: '#334155',
-        },
-        body2: {
-          color: '#475569',
-        },
-      },
-    },
-  },
-});
+// JBrowse is large: load the genome browser only when it is opened
+const GenomeBrowser = lazy(() => import('./pages/GenomeBrowser'));
 
-function App() {
+const TITLES: [RegExp, string][] = [
+  [/^\/explore\/human/, 'Human gene sets'],
+  [/^\/explore\/mouse/, 'Mouse gene sets'],
+  [/^\/browser/, 'Genome browser'],
+  [/^\/downloads/, 'Downloads'],
+  [/^\/(method|pipeline)/, 'Method'],
+  [/^\/releases/, 'Releases'],
+  [/^\/cite/, 'Cite'],
+];
+
+// Scroll to the top on page changes and keep the document title in step
+const RouteEffects: React.FC = () => {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) window.scrollTo(0, 0);
+    const title = TITLES.find(([re]) => re.test(pathname))?.[1];
+    document.title = title ? `${title} · TUSCO` : 'TUSCO · single-isoform controls for long-read transcriptomes';
+  }, [pathname, hash]);
+  return null;
+};
+
+// /pipeline and /downloads/<species> are the addresses of the previous site
+const LegacyDownloads: React.FC = () => {
+  const { species } = useParams();
+  return <Downloads key={species} />;
+};
+const RedirectKeepingRelease: React.FC<{ to: string }> = ({ to }) => {
+  const link = useReleaseLink();
+  return <Navigate to={link(to)} replace />;
+};
+
+const ReleaseError: React.FC = () => {
+  const { error } = useRelease();
+  if (!error) return null;
+  return (
+    <Container maxWidth="lg" sx={{ pt: 3 }}>
+      <Alert severity="error">The list of gene set releases could not be loaded ({error}). Please reload the page.</Alert>
+    </Container>
+  );
+};
+
+const App: React.FC = () => {
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  const mode = darkMode ? 'dark' : 'light';
+  const theme = useMemo(() => createAppTheme(mode), [mode]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* Removed routes for /human and /mouse */}
-          <Route path="/downloads" element={<Navigate to="/downloads/human" replace />} />
-          <Route path="/downloads/:species" element={<Downloads />} />
-          <Route path="/pipeline" element={<PipelinePage />} />
-        </Routes>
+        <ReleaseProvider>
+          <RouteEffects />
+          <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <SiteHeader mode={mode} onToggleMode={toggleDarkMode} />
+            <Box component="main" sx={{ flex: 1 }}>
+              <ReleaseError />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/explore" element={<RedirectKeepingRelease to="/explore/human" />} />
+                <Route path="/explore/:species" element={<Explore />} />
+                <Route path="/browser" element={<RedirectKeepingRelease to="/browser/human" />} />
+                <Route
+                  path="/browser/:species"
+                  element={
+                    <Suspense fallback={<LinearProgress sx={{ m: 4 }} />}>
+                      <GenomeBrowser />
+                    </Suspense>
+                  }
+                />
+                <Route path="/downloads" element={<Downloads />} />
+                <Route path="/downloads/:species" element={<LegacyDownloads />} />
+                <Route path="/method" element={<Method />} />
+                <Route path="/pipeline" element={<RedirectKeepingRelease to="/method" />} />
+                <Route path="/releases" element={<Releases />} />
+                <Route path="/cite" element={<Cite />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Box>
+            <SiteFooter />
+          </Box>
+        </ReleaseProvider>
       </Router>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

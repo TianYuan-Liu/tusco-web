@@ -1,0 +1,77 @@
+gene_id	gene_symbol	status	note
+ENSMUSG00000032593	Amigo3	kept	
+ENSMUSG00000096188	Cmtm4	kept	
+ENSMUSG00000092118	Fancf	kept	
+ENSMUSG00000049285	Mblac1	kept	
+ENSMUSG00000078202	Nrarp	kept	
+ENSMUSG00000050621	Rps27rt	kept	
+ENSMUSG00000042821	Snai1	kept	
+ENSMUSG00000091736	Yy2	kept	
+ENSMUSG00000018500	Adora2b	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000050332	Amer1	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000021125	Arg2	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000048040	Arxes2	new	not a matching single-isoform gene in vM38
+ENSMUSG00000049489	Ccnq	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000070473	Cldn3	new	not a matching single-isoform gene in vM38
+ENSMUSG00000048644	Ctxn1	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000028445	Enho	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000046546	Fam43a	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000067199	Frat1	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000047604	Frat2	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000036322	H2-Ea	new	not a matching single-isoform gene in vM38
+ENSMUSG00000068854	H2bc21	new	not a matching single-isoform gene in vM38
+ENSMUSG00000007836	Hnrnpa0	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000053560	Ier2	new	not a matching single-isoform gene in vM38
+ENSMUSG00000003541	Ier3	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000074918	Inafm2	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000037035	Inhbb	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000043881	Kbtbd7	new	not a matching single-isoform gene in vM38
+ENSMUSG00000043998	Mgat2	new	not a matching single-isoform gene in vM38
+ENSMUSG00000051319	Mtln	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000072437	Nanos1	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000044231	Nhlrc1	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000054383	Pnma1	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000054364	Rhob	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000046791	Riox1	new	not a matching single-isoform gene in vM38
+ENSMUSG00000098134	Rnf113a2	new	not a matching single-isoform gene in vM38
+ENSMUSG00000020496	Rnf187	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000071648	Rom1	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000070934	Rraga	new	not a matching single-isoform gene in vM38
+ENSMUSG00000061024	Rrs1	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000055745	Rtl6	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000046229	Scand1	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000041571	Selenow	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000049091	Sephs2	new	not a matching single-isoform gene in vM38
+ENSMUSG00000036169	Sostdc1	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000046470	Sox18	new	not a matching single-isoform gene in vM38
+ENSMUSG00000000567	Sox9	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000103906	Tigd5	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000043496	Tril	new	not a matching single-isoform gene in vM38
+ENSMUSG00000074671	Tspyl3	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000070697	Utp3	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000069114	Zbtb10	new	transcript ends differ between GENCODE and RefSeq by up to 100 bp with the same intron chain; accepted for multi-exon genes
+ENSMUSG00000073062	Zxdb	new	removed in the published run by the refTSS check; mouse genes are no longer refTSS-checked
+ENSMUSG00000031983	2310022B05Rik	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000027811	4930579G24Rik	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000036376	Abt1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000034936	Arl4d	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000033940	Brk1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000023988	Bysl	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000040659	Efhd2	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000070583	Fv1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000051495	Irf2bp2	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000029557	Mrm2	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000020671	Rab10	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000049892	Rasd1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000020846	Rflnb	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000022769	Sdf2l1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000072620	Slfn2	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000042380	Smim12	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000091264	Smim13	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000054408	Spcs3	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000051316	Taf7	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000049232	Tigd2	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000048429	Timm29	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000117924	Tmem223	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000028367	Txn1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)
+ENSMUSG00000045210	Vcpip1	dropped	not single-isoform in GENCODE vM39 (new long-read isoforms or changed transcript ends)

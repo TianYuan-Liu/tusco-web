@@ -1,5 +1,5 @@
 // Runtime SVG text linker: wraps <text> nodes in <a> without changing styles.
-// - Builds links to /data/{species}/tusco_{species}_{slug}.tsv
+// - Builds links to {baseHref}/tusco_{species}_{slug}.tsv (default /data/{species})
 // - Special fallbacks per requirements:
 //   * "Heart - Left Ventricle" -> heart_left_ventricle (else heart)
 //   * "Kidney - Cortex" / "Kidney - Medulla" -> kidney
@@ -105,7 +105,8 @@ export function linkSvgTextLabels(
   svgRoot: SVGSVGElement,
   species: Species,
   availableSlugs?: Set<string>,
-  aliasMap?: Map<string, string>
+  aliasMap?: Map<string, string>,
+  baseHref: string = `/data/${species}`
 ) {
   if (!svgRoot) return;
   const texts = Array.from(svgRoot.querySelectorAll('text')) as SVGTextElement[];
@@ -130,7 +131,7 @@ export function linkSvgTextLabels(
       /* Label highlighting with subtle academic styling */
       a.svg-tissue-link text, a.svg-tissue-link tspan { 
         transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Roboto, sans-serif;
       }
       
       a.svg-tissue-link:hover text,
@@ -182,6 +183,29 @@ export function linkSvgTextLabels(
         fill-opacity: 0.95;
         filter: url(#regionGlow);
         transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Selected tissue: kept highlighted until another one is chosen */
+      a.svg-tissue-link.is-selected text,
+      a.svg-tissue-link.is-selected tspan {
+        fill: #0e7c75 !important;
+        font-weight: 600;
+      }
+      .tissue-connector.is-selected {
+        stroke: #0e7c75;
+        stroke-width: 1.2;
+        stroke-opacity: 1;
+      }
+      .tissue-highlight-dot.is-selected {
+        opacity: 1;
+        fill: #11948a;
+        stroke: #ffffff;
+      }
+      path.is-selected, polygon.is-selected, rect.is-selected {
+        fill: #11948a !important;
+        fill-opacity: 0.75 !important;
+        stroke: #0e7c75 !important;
+        stroke-width: 1 !important;
       }
 
       /* Unavailable tissue styling - gray on hover */
@@ -349,8 +373,9 @@ export function linkSvgTextLabels(
     }
 
     const file = `${prefix}${chosen}.tsv`;
-    const href = `/data/${species}/${file}`;
+    const href = `${baseHref}/${file}`;
     wrapTextWithLink(textEl, href, file);
+    textEl.setAttribute('data-tissue-slug', chosen);
   }
 
   // After we wrap links, wire connectors and endpoint glow
@@ -471,11 +496,15 @@ function wireConnectors(svgRoot: SVGSVGElement) {
   if (!links.length) return;
 
   const connectorElems = Array.from(svgRoot.querySelectorAll('line, polyline')) as (SVGLineElement | SVGPolylineElement)[];
-  // Heuristically filter to thin dark connectors
+  // Connectors are thin lines in a dark neutral grey or black (#434343 and #231f20 in the human
+  // drawing, #515252 in the mouse one); read the computed style, which also covers CSS classes
   const connectors = connectorElems.filter(el => {
-    const stroke = (el.getAttribute('stroke') || '').toLowerCase();
-    const sw = (el.getAttribute('stroke-width') || '').trim();
-    return (stroke === '#434343' || stroke === '#231f20' || stroke === '#000' || stroke === '#000000') && (sw === '0.25' || sw === '0.25px' || sw === '0.2' || sw === '0.2px');
+    const cs = getComputedStyle(el);
+    const width = parseFloat(cs.strokeWidth);
+    const rgb = cs.stroke.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!rgb || !(width > 0 && width <= 0.5)) return false;
+    const [r, g, b] = rgb.slice(1, 4).map(Number);
+    return Math.max(r, g, b) < 120 && Math.max(r, g, b) - Math.min(r, g, b) < 30;
   });
   connectors.forEach(el => el.classList.add('tissue-connector'));
 
@@ -496,7 +525,13 @@ function wireConnectors(svgRoot: SVGSVGElement) {
     let bbox: DOMRect | undefined;
     try { bbox = text.getBBox(); } catch { /* ignore */ }
     if (!bbox) continue;
-    const ref: XY = { x: bbox.x + bbox.width * 0.5, y: bbox.y + bbox.height * 0.5 };
+    // getBBox() is in the label's own coordinates; labels are placed with transform="matrix(...)", so map
+    // the centre into the drawing's coordinates, where the connectors are
+    const textCtm = text.getCTM();
+    const svgCtm = svgRoot.getCTM();
+    const local = new DOMPoint(bbox.x + bbox.width * 0.5, bbox.y + bbox.height * 0.5);
+    const centre = textCtm && svgCtm ? local.matrixTransform(svgCtm.inverse().multiply(textCtm)) : local;
+    const ref: XY = { x: centre.x, y: centre.y };
 
     // Find best connector by nearest distance among rows with close y
     let best: { el: SVGLineElement | SVGPolylineElement; d: number } | undefined;
@@ -528,7 +563,9 @@ function wireConnectors(svgRoot: SVGSVGElement) {
     // Attempt to detect the anatomical region under the connector endpoint
     const regionEl = endpoint ? detectRegionUnderPoint(svgRoot, endpoint) : null;
     if (regionEl) {
-      regionEl.setAttribute('data-tissue-group', groupId);
+      // several labels can point at the same organ shape
+      const groups = (regionEl.getAttribute('data-tissue-regions') || '').split(' ').filter(Boolean);
+      regionEl.setAttribute('data-tissue-regions', [...groups, groupId].join(' '));
       // Keep baseline styling intact; only add highlight class when active
     }
 
@@ -577,31 +614,47 @@ function wireConnectors(svgRoot: SVGSVGElement) {
   }
 }
 
+// The anatomical shape under a connector endpoint: the top-most filled path/polygon/rect containing the
+// point, i.e. the organ drawn there rather than the body outline beneath it. Pure geometry, so it works
+// whether or not that part of the drawing is on screen.
 function detectRegionUnderPoint(svg: SVGSVGElement, pt: XY): SVGGraphicsElement | null {
-  try {
-    // Convert SVG coords -> screen coords
-    const p = svg.createSVGPoint();
-    p.x = pt.x; p.y = pt.y;
-    const ctm = svg.getScreenCTM();
-    if (!ctm) return null;
-    const sp = p.matrixTransform(ctm);
-    // Probe a small set of offsets to reduce chance of hitting a connector line
-    const offsets = [
-      { dx: 0, dy: 0 }, { dx: 1.5, dy: 0 }, { dx: -1.5, dy: 0 }, { dx: 0, dy: 1.5 }, { dx: 0, dy: -1.5 },
-      { dx: 1, dy: 1 }, { dx: -1, dy: 1 }, { dx: 1, dy: -1 }, { dx: -1, dy: -1 }
-    ];
-    for (const o of offsets) {
-      const el = document.elementFromPoint(sp.x + o.dx, sp.y + o.dy) as Element | null;
-      if (!el) continue;
-      const target = (el.closest('path, polygon, rect') as SVGGraphicsElement | null) || (el as SVGGraphicsElement | null);
-      if (!target) continue;
-      const tag = target.tagName.toLowerCase();
-      if (tag === 'path' || tag === 'polygon' || tag === 'rect') {
-        return target;
+  const svgCtm = svg.getCTM();
+  if (!svgCtm) return null;
+  const shapes = Array.from(svg.querySelectorAll('path, polygon, rect')) as SVGGeometryElement[];
+  const probes = [
+    { dx: 0, dy: 0 }, { dx: 1.2, dy: 0 }, { dx: -1.2, dy: 0 }, { dx: 0, dy: 1.2 }, { dx: 0, dy: -1.2 },
+  ];
+  for (const o of probes) {
+    let top: SVGGeometryElement | null = null;
+    for (const el of shapes) {
+      if (el.closest('a, #tissue-hover-overlays, defs, clipPath, mask')) continue;
+      const fill = getComputedStyle(el).fill;
+      if (!fill || fill === 'none') continue;
+      const ctm = el.getCTM();
+      if (!ctm || typeof el.isPointInFill !== 'function') continue;
+      // svg user space -> viewport -> element user space
+      const local = new DOMPoint(pt.x + o.dx, pt.y + o.dy).matrixTransform(ctm.inverse().multiply(svgCtm));
+      let inside = false;
+      try {
+        inside = el.isPointInFill(local);
+      } catch {
+        inside = false;
       }
+      if (inside) top = el; // later in document order = painted on top
     }
-  } catch {
-    // ignore
+    if (top) return top;
   }
   return null;
+}
+
+// Keep one tissue highlighted (label, connector, endpoint and organ), or none
+export function setSelectedTissue(svgRoot: SVGSVGElement, slug: string | null) {
+  svgRoot.querySelectorAll('.is-selected').forEach((el) => el.classList.remove('is-selected'));
+  if (!slug) return;
+  const text = svgRoot.querySelector(`[data-tissue-slug="${CSS.escape(slug)}"]`);
+  const group = text?.closest('a')?.getAttribute('data-tissue-group');
+  if (!group) return;
+  svgRoot
+    .querySelectorAll(`[data-tissue-group="${group}"], [data-tissue-regions~="${group}"]`)
+    .forEach((el) => el.classList.add('is-selected'));
 }

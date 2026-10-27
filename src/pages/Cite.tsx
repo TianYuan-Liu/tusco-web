@@ -1,339 +1,102 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Paper, Button, Snackbar, Alert, Divider, Chip } from '@mui/material';
-import { motion } from 'framer-motion';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import LinkIcon from '@mui/icons-material/Link';
+import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
+import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
+import CheckRounded from '@mui/icons-material/CheckRounded';
+import { Page, PageHeader, Panel, Section } from '../components/ui';
+import { monoStack } from '../theme';
 
-const Cite: React.FC = () => {
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [copiedText, setCopiedText] = useState('');
+const DOI = '10.1038/s41467-026-72089-1';
 
-  const handleCopyToClipboard = (text: string, type: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedText(type);
-    setSnackbarOpen(true);
-  };
+const CITATION =
+  'Liu, T., Paniagua, A., Jetzinger, F., Ferrández-Peral, L., Frankish, A. & Conesa, A. TUSCO: benchmarking transcriptome reconstruction with endogenous single-isoform controls. Nat. Commun. 17, 5654 (2026). https://doi.org/10.1038/s41467-026-72089-1';
 
-  const citationText = `Liu, T., Paniagua, A., Jetzinger, F., Ferrández-Peral, L., Frankish, A., and Conesa, A. (2025). Transcriptome Universal Single-isoform COntrol: A Framework for Evaluating Transcriptome reconstruction Quality. bioRxiv. https://doi.org/10.1101/2025.08.23.671926`;
-
-  const bibtexText = `@article{liu2025tusco,
-  title={Transcriptome Universal Single-isoform COntrol: A Framework for Evaluating Transcriptome reconstruction Quality},
+const BIBTEX = `@article{liu2026tusco,
+  title={{TUSCO}: benchmarking transcriptome reconstruction with endogenous single-isoform controls},
   author={Liu, Tianyuan and Paniagua, Alejandro and Jetzinger, Fabian and Ferrández-Peral, Luis and Frankish, Adam and Conesa, Ana},
-  journal={bioRxiv},
-  year={2025},
-  doi={10.1101/2025.08.23.671926},
-  url={https://doi.org/10.1101/2025.08.23.671926}
+  journal={Nature Communications},
+  volume={17},
+  pages={5654},
+  year={2026},
+  doi={${DOI}},
+  url={https://doi.org/${DOI}}
 }`;
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 }
-    }
+const CopyBlock: React.FC<{ title: string; text: string; mono?: boolean }> = ({ title, text, mono }) => {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard?.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    });
   };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 100, damping: 10 }
-    }
-  };
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <Box sx={{ py: { xs: 6, md: 8 }, backgroundColor: 'var(--color-bg-default)' }}>
-        <Container maxWidth="md">
-          <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Typography
-              variant="h1"
-              component="h1"
-              sx={{
-                mb: 3,
-                textAlign: 'center',
-                color: 'var(--color-text-primary)',
-                fontSize: { xs: '2rem', md: '2.5rem' },
-                fontWeight: 700,
-              }}
-            >
-              Citation
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                mb: 6,
-                textAlign: 'center',
-                color: 'var(--color-text-secondary)',
-                maxWidth: 600,
-                mx: 'auto',
-                fontSize: '1.1rem',
-                lineHeight: 1.6,
-              }}
-            >
-              Please cite TUSCO in your publications when using our datasets or methodology
-            </Typography>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div variants={itemVariants}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 4,
-                  mb: 4,
-                  border: '1px solid var(--color-border-default)',
-                  backgroundColor: 'var(--color-bg-paper)',
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  component="h2"
-                  sx={{
-                    mb: 3,
-                    color: 'var(--color-text-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  Primary Citation
-                </Typography>
-                
-                <Box
-                  sx={{
-                    p: 3,
-                    backgroundColor: 'var(--color-gray-50)',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--color-border-muted)',
-                    mb: 3,
-                  }}
-                >
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      fontFamily: 'var(--font-family-mono)',
-                      lineHeight: 1.6,
-                      color: 'var(--color-text-primary)',
-                      fontSize: '0.95rem',
-                    }}
-                  >
-                    {citationText}
-                  </Typography>
-                </Box>
-
-                <Button
-                  variant="outlined"
-                  startIcon={<ContentCopyIcon />}
-                  onClick={() => handleCopyToClipboard(citationText, 'citation')}
-                  sx={{
-                    borderColor: 'var(--color-primary-main)',
-                    color: 'var(--color-primary-main)',
-                    '&:hover': {
-                      borderColor: 'var(--color-primary-dark)',
-                      backgroundColor: 'var(--color-primary-50)',
-                    },
-                  }}
-                >
-                  Copy Citation
-                </Button>
-              </Paper>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 4,
-                  mb: 4,
-                  border: '1px solid var(--color-border-default)',
-                  backgroundColor: 'var(--color-bg-paper)',
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  component="h2"
-                  sx={{
-                    mb: 3,
-                    color: 'var(--color-text-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  BibTeX Format
-                </Typography>
-
-                <Box
-                  sx={{
-                    p: 3,
-                    backgroundColor: 'var(--color-gray-50)',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--color-border-muted)',
-                    mb: 3,
-                  }}
-                >
-                  <Typography
-                    component="pre"
-                    sx={{
-                      fontFamily: 'var(--font-family-mono)',
-                      lineHeight: 1.6,
-                      color: 'var(--color-text-primary)',
-                      fontSize: '0.875rem',
-                      whiteSpace: 'pre-wrap',
-                      margin: 0,
-                    }}
-                  >
-                    {bibtexText}
-                  </Typography>
-                </Box>
-
-                <Button
-                  variant="outlined"
-                  startIcon={<ContentCopyIcon />}
-                  onClick={() => handleCopyToClipboard(bibtexText, 'BibTeX')}
-                  sx={{
-                    borderColor: 'var(--color-primary-main)',
-                    color: 'var(--color-primary-main)',
-                    '&:hover': {
-                      borderColor: 'var(--color-primary-dark)',
-                      backgroundColor: 'var(--color-primary-50)',
-                    },
-                  }}
-                >
-                  Copy BibTeX
-                </Button>
-              </Paper>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 4,
-                  mb: 4,
-                  border: '1px solid var(--color-border-default)',
-                  backgroundColor: 'var(--color-bg-paper)',
-                }}
-              >
-                <Typography
-                  variant="h4"
-                  component="h2"
-                  sx={{
-                    mb: 3,
-                    color: 'var(--color-text-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  Additional Resources
-                </Typography>
-
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 1, color: 'var(--color-text-primary)' }}>
-                      <Chip
-                        icon={<LinkIcon />}
-                        label="DOI"
-                        size="small"
-                        sx={{
-                          mr: 1,
-                          backgroundColor: 'var(--color-primary-100)',
-                          color: 'var(--color-primary-main)',
-                        }}
-                      />
-                      Digital Object Identifier
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'var(--color-text-secondary)' }}>
-                      DOI: <a href="https://doi.org/10.1101/2025.08.23.671926" target="_blank" rel="noopener noreferrer">10.1101/2025.08.23.671926</a>
-                    </Typography>
-                  </Box>
-
-                  <Divider />
-
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 1, color: 'var(--color-text-primary)' }}>
-                      Data Availability
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'var(--color-text-secondary)', mb: 2 }}>
-                      All TUSCO datasets, code, and supplementary materials are publicly available:
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                      <Chip
-                        label="GitHub Repository"
-                        variant="outlined"
-                        size="small"
-                        sx={{ borderColor: 'var(--color-border-default)' }}
-                      />
-                      <Chip
-                        label="Zenodo Archive"
-                        variant="outlined"
-                        size="small"
-                        sx={{ borderColor: 'var(--color-border-default)' }}
-                      />
-                      <Chip
-                        label="GEO Database"
-                        variant="outlined"
-                        size="small"
-                        sx={{ borderColor: 'var(--color-border-default)' }}
-                      />
-                    </Box>
-                  </Box>
-
-                  <Divider />
-
-                  <Box>
-                    <Typography variant="h6" sx={{ mb: 1, color: 'var(--color-text-primary)' }}>
-                      Contact Information
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'var(--color-text-secondary)' }}>
-                      For questions about TUSCO methodology, data, or collaborative opportunities, 
-                      please contact the corresponding authors or submit an issue on our GitHub repository.
-                    </Typography>
-                  </Box>
-                </Box>
-              </Paper>
-            </motion.div>
-          </motion.div>
-        </Container>
-      </Box>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    <Panel>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
+        <Typography variant="h4" component="h2">
+          {title}
+        </Typography>
+        <Button size="small" onClick={copy} startIcon={copied ? <CheckRounded /> : <ContentCopyRounded fontSize="small" />}>
+          {copied ? 'Copied' : 'Copy'}
+        </Button>
+      </Stack>
+      <Box
+        component={mono ? 'pre' : 'p'}
+        sx={{
+          m: 0,
+          p: 2,
+          borderRadius: 2,
+          bgcolor: 'action.hover',
+          fontFamily: mono ? monoStack : 'inherit',
+          fontSize: mono ? '0.8rem' : '0.95rem',
+          lineHeight: 1.6,
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+        }}
       >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity="success"
-          sx={{
-            backgroundColor: 'var(--color-success-main)',
-            color: 'white',
-            '& .MuiAlert-icon': {
-              color: 'white',
-            },
-          }}
-        >
-          {copiedText} copied to clipboard!
-        </Alert>
-      </Snackbar>
-    </motion.div>
+        {text}
+      </Box>
+    </Panel>
   );
 };
+
+const Cite: React.FC = () => (
+  <Page>
+    <PageHeader title="Citing TUSCO">
+      If TUSCO helps your work, please cite the Nature Communications article below, and name the gene set release you
+      used (for example “TUSCO release 2026.10”), since the sets change with the annotations.
+    </PageHeader>
+    <Grid container spacing={3}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CopyBlock title="Reference" text={CITATION} />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CopyBlock title="BibTeX" text={BIBTEX} mono />
+      </Grid>
+    </Grid>
+    <Section title="Links">
+      <Stack spacing={1}>
+        <Typography variant="body1">
+          Article:{' '}
+          <Link href={`https://doi.org/${DOI}`} target="_blank" rel="noopener noreferrer">
+            doi.org/{DOI}
+          </Link>{' '}
+          (Nature Communications, 24 April 2026)
+        </Typography>
+        <Typography variant="body1">
+          TUSCO in SQANTI3:{' '}
+          <Link href="https://conesalab.github.io/SQANTI3/latest/Tusco-quick-start" target="_blank" rel="noopener noreferrer">
+            quick start
+          </Link>
+        </Typography>
+        <Typography variant="body1">
+          Gene selection pipeline and the paper figures:{' '}
+          <Link href="https://github.com/ConesaLab/tusco-paper" target="_blank" rel="noopener noreferrer">
+            github.com/ConesaLab/tusco-paper
+          </Link>
+        </Typography>
+      </Stack>
+    </Section>
+  </Page>
+);
 
 export default Cite;

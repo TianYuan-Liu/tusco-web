@@ -28,41 +28,21 @@ npm test             # Run React test suite in watch mode
 
 ## Architecture
 
-### Full-Stack Structure
-- **Frontend**: React 18 + TypeScript + Material-UI
-- **Backend**: Express.js server serving GTF files and React build
-- **Data**: GTF files stored in `data/human/` and `data/mouse/` directories
+See README.md for pages, data layout and API. In short:
 
-### Key Directories
-```
-src/
-├── components/          # Reusable React components
-│   ├── GTFFileList.tsx     # File listing component
-│   ├── GeneSelectionPipeline.tsx  # Main pipeline interface
-│   └── Navbar.tsx          # Navigation component
-├── pages/              # Route-based page components
-│   ├── Home.tsx           # Landing page
-│   ├── HumanData.tsx      # Human GTF data page
-│   ├── MouseData.tsx      # Mouse GTF data page
-│   └── PipelinePage.tsx   # Pipeline workflow page
-data/
-├── human/             # Human GTF files
-└── mouse/             # Mouse GTF files
-```
-
-### React Router Structure
-- `/` - Home page with feature overview
-- `/human` - Human tissue data browser with downloadable TSV files
-- `/mouse` - Mouse tissue data browser with downloadable TSV files  
-- `/pipeline` - Gene selection pipeline interface
-
-### Backend API Endpoints
-- `GET /api/tissues/human` - Get human tissue data with TSV file mappings
-- `GET /api/tissues/mouse` - Get mouse tissue data with TSV file mappings
-- `GET /data/*` - Static file serving for TSV data files
-
-### Data Structure
-TSV files are organized by UBERON tissue ontology IDs and served with friendly tissue names. Each file contains TUSCO gene annotations for tissue-specific expression filtering.
+- `data/releases.json` lists gene set releases; the paper release keeps its files in `data/human` and `data/mouse`
+  (stable public URLs, identical to the files SQANTI3 bundles), later releases live in `data/releases/<id>/<species>/`.
+- `scripts/build-catalog.js` turns each release's files into `data/catalog/<id>/<species>.json`, which the pages read.
+  Rerun it whenever data changes.
+- `server/api.js` holds the release-aware API shared by `server.js` (dev) and `server.prod.js` (production);
+  release ids are looked up in `data/releases.json`, never joined into paths.
+- Front end: `src/theme.ts` (light/dark tokens, chart colours), `src/data/catalog.ts` (types and loaders),
+  `src/context/ReleaseContext.tsx` (selected release in `?release=`), pages in `src/pages`, charts and tables in
+  `src/components`. `AnatomyMap` + `utils/svgTextLinker.ts` link the body-map SVG labels to tissue sets.
+- Charts: single-series bars in the brand teal (`tokens.*.series`, validated for both themes), grey for
+  de-emphasis, and a table view next to every chart.
+- Genome browser: `src/pages/GenomeBrowser.tsx` (lazy-loaded) embeds `@jbrowse/react-linear-genome-view2`, which needs
+  React 19.2 and MUI 7 (one shared copy). Tracks come from `data/jbrowse/` (`scripts/build_jbrowse_tracks.py`).
 
 ## Technology Stack
 
@@ -81,30 +61,7 @@ TSV files are organized by UBERON tissue ontology IDs and served with friendly t
 
 ## Code Conventions
 
-### Styling & Theme
-- Custom Material-UI theme with primary color `#2a9d8f` (teal)
-- Consistent use of `borderRadius: 16px` for modern appearance
-- Framer Motion animations for enhanced UX
-- Typography uses Inter font family
-
-### Component Patterns
-- Functional components with TypeScript interfaces
-- Material-UI's `sx` prop for styling
-- Consistent error handling in API calls
-- Page-based routing with dedicated components
-
-### File Organization
-- Components are self-contained with embedded styles
-- Pages handle route-specific logic and data fetching
-- Server-side file serving for GTF data access
-
-## Development Notes
-
-### Server Configuration
-The Express server runs on port 3001 and serves both the API and static React build. During development, the React dev server proxies API calls to the Express server.
-
-### Data Structure
-GTF files are organized by species (human/mouse) and served statically through Express middleware. The API endpoints provide file metadata including name, size, and path.
-
-### Build Process
-Uses Create React App's standard build process. The server serves the built React app from the `build/` directory in production.
+- Functional components with TypeScript interfaces; MUI `sx` for styling; colours from `src/theme.ts` tokens.
+- Typography: the system font stack (San Francisco on Apple devices) for all text, `ui-monospace`/SF Mono for identifiers; no web fonts.
+- Logo: `src/components/Logo.tsx`, inline SVG generated from `public/2025-4_Logos_AnaConesa_V3_tusco.svg`; favicons are SVG with PNG/ICO fallbacks.
+- Build and test on Drago (no local builds): node_modules prepared off-cluster, Node from the `nodejs-wheel-binaries` wheel.

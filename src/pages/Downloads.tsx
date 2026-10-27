@@ -1,226 +1,193 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, Grid, Paper, Tabs, Tab, Divider } from '@mui/material';
-import { motion } from 'framer-motion';
-import AnatomyMap from '../components/AnatomyMap';
-import BulkDownloadBox from '../components/BulkDownloadBox';
-import UniversalGeneSetCard from '../components/UniversalGeneSetCard';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Link,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
+import { Catalog, fileUrl, Release, SPECIES, SPECIES_LABEL, useCatalog, Species } from '../data/catalog';
+import { useRelease } from '../context/ReleaseContext';
+import { FileButton, Mono, Page, PageHeader, Panel, Section } from '../components/ui';
 
-interface TissueData {
-  tissueName: string;
-  uberonId: string;
-  filename: string;
-  originalFile: string;
-  size: string;
-}
+const FILE_NOTES: Record<string, string> = {
+  'tissue_statistics.tsv': 'Genes per tissue set',
+  'changes_vs_published.tsv': 'Kept, new and dropped universal genes, with reasons',
+  'run_parameters.json': 'Every threshold used to build the sets',
+  'gene_filter_log.tsv': 'For every candidate gene, the step that removed it',
+};
+
+const SpeciesDownloads: React.FC<{ release: Release; species: Species; catalog: Catalog | null }> = ({
+  release,
+  species,
+  catalog,
+}) => {
+  const extras = catalog?.files.filter((f) => !f.startsWith(`tusco_${species}.`)) || [];
+  return (
+    <Panel sx={{ height: '100%' }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+        <Typography variant="h3" component="h3">
+          {SPECIES_LABEL[species]}
+        </Typography>
+        <Typography variant="caption">{release.species[species].annotation[0]}</Typography>
+      </Stack>
+
+      <Typography variant="h4" component="h4" sx={{ mt: 2.5, mb: 1 }}>
+        Universal set · {catalog?.universal.length ?? '–'} genes
+      </Typography>
+      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        {catalog && <FileButton href={fileUrl(catalog, `tusco_${species}.tsv`)} label={`tusco_${species}.tsv`} primary />}
+        {catalog?.files.includes(`tusco_${species}.gtf`) && (
+          <FileButton href={fileUrl(catalog, `tusco_${species}.gtf`)} label={`tusco_${species}.gtf`} />
+        )}
+      </Stack>
+
+      <Typography variant="h4" component="h4" sx={{ mt: 2.5, mb: 1 }}>
+        Tissue sets · {catalog?.tissues.length ?? '–'} tissues
+      </Typography>
+      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <FileButton
+          href={`/api/download/bulk/${species}?release=${release.id}`}
+          label={catalog?.tissues.some((t) => t.gtf) ? 'All sets, TSV + GTF (ZIP)' : 'All sets, TSV (ZIP)'}
+        />
+      </Stack>
+
+      {extras.length > 0 && (
+        <>
+          <Typography variant="h4" component="h4" sx={{ mt: 2.5, mb: 1 }}>
+            Provenance
+          </Typography>
+          <Box component="ul" sx={{ m: 0, pl: 2.5 }}>
+            {extras.map((f) => (
+              <Typography component="li" variant="body2" key={f} sx={{ py: 0.25 }}>
+                <Link href={catalog ? fileUrl(catalog, f) : '#'} download>
+                  <Mono>{f}</Mono>
+                </Link>{' '}
+                <Typography component="span" variant="caption">
+                  {Object.entries(FILE_NOTES).find(([k]) => f.endsWith(k))?.[1]}
+                </Typography>
+              </Typography>
+            ))}
+          </Box>
+        </>
+      )}
+    </Panel>
+  );
+};
 
 const Downloads: React.FC = () => {
-  const [humanTissues, setHumanTissues] = useState<TissueData[]>([]);
-  const [mouseTissues, setMouseTissues] = useState<TissueData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { species } = useParams();
-  const routeSpecies: 'human' | 'mouse' = species === 'mouse' ? 'mouse' : 'human';
-  const [speciesTab, setSpeciesTab] = useState<'human' | 'mouse'>(routeSpecies);
+  const { index, release, setRelease } = useRelease();
+  const human = useCatalog(release?.id || null, 'human');
+  const mouse = useCatalog(release?.id || null, 'mouse');
 
-  // Simplified page: no species tab state required
-
+  // Old links (/downloads/human, /downloads/mouse) scroll to that species
   useEffect(() => {
-    const fetchTissues = async () => {
-      try {
-        const [humanResponse, mouseResponse] = await Promise.all([
-          fetch('/api/tissues/human'),
-          fetch('/api/tissues/mouse')
-        ]);
-        
-        const humanData = await humanResponse.json();
-        const mouseData = await mouseResponse.json();
-        
-        setHumanTissues(humanData);
-        setMouseTissues(mouseData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching tissues:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchTissues();
-  }, []);
-
-  // Keep tab state in sync with URL param
-  useEffect(() => {
-    if (speciesTab !== routeSpecies) {
-      setSpeciesTab(routeSpecies);
-    }
-  }, [routeSpecies, speciesTab]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 100, damping: 10 }
-    }
-  };
+    if (species && human.data && mouse.data) document.getElementById(`downloads-${species}`)?.scrollIntoView();
+  }, [species, human.data, mouse.data]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <Box sx={{ py: { xs: 6, md: 8 }, backgroundColor: 'var(--color-bg-default)' }}>
-        <Container maxWidth="lg">
-          <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Typography
-              variant="h1"
-              component="h1"
-              sx={{
-                mb: 3,
-                textAlign: 'center',
-                color: 'var(--color-text-primary)',
-                fontSize: { xs: '2rem', md: '2.5rem' },
-                fontWeight: 700,
-              }}
-            >
-              Downloads
-            </Typography>
-            {/* Removed descriptive subtitle to simplify the page */}
-          </motion.div>
+    <Page>
+      <PageHeader title="Downloads" meta={release && `Release ${release.id}`}>
+        Tab-separated tables with Ensembl, RefSeq and Entrez identifiers, and GTF files with the single annotated
+        transcript of each gene.
+      </PageHeader>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <Grid container spacing={4}>
-              <Grid item xs={12}>
-                <motion.div variants={itemVariants}>
-                  <Tabs
-                    value={speciesTab === 'human' ? 0 : 1}
-                    onChange={(_, v) => {
-                      const newSpecies = v === 0 ? 'human' : 'mouse';
-                      setSpeciesTab(newSpecies);
-                      navigate(`/downloads/${newSpecies}`);
-                    }}
-                    variant="fullWidth"
-                    sx={{ mb: 3 }}
-                  >
-                    <Tab label="Human" />
-                    <Tab label="Mouse" />
-                  </Tabs>
-
-                  {!loading && (
-                    <BulkDownloadBox
-                      species={speciesTab}
-                      tissueCount={speciesTab === 'human' ? humanTissues.length : mouseTissues.length}
-                    />
-                  )}
-
-                  {!loading && (
-                    <UniversalGeneSetCard species={speciesTab} />
-                  )}
-
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      p: { xs: 2, md: 4 },
-                      border: '1px solid var(--color-border-default)',
-                      backgroundColor: 'var(--color-bg-paper)',
-                    }}
-                  >
-                    {speciesTab === 'human' ? (
-                      <Box>
-                        <Box
-                          sx={{
-                            p: 2.5,
-                            mb: 3,
-                            backgroundColor: 'rgba(42, 157, 143, 0.04)',
-                            borderRadius: 2,
-                            borderLeft: '4px solid var(--color-primary)',
-                          }}
-                        >
-                          <Typography
-                            variant="h4"
-                            sx={{
-                              mb: 0.5,
-                              color: 'var(--color-text-primary)',
-                              fontWeight: 600,
-                            }}
-                          >
-                            Human Tissue Data
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              color: 'var(--color-text-secondary)',
-                              fontSize: '0.95rem',
-                            }}
-                          >
-                            Click labeled tissues to download — {humanTissues.length} datasets available
-                          </Typography>
-                        </Box>
-                        {!loading && (
-                          <AnatomyMap species="human" tissues={humanTissues} />
-                        )}
-                      </Box>
-                    ) : (
-                      <Box>
-                        <Box
-                          sx={{
-                            p: 2.5,
-                            mb: 3,
-                            backgroundColor: 'rgba(42, 157, 143, 0.04)',
-                            borderRadius: 2,
-                            borderLeft: '4px solid var(--color-primary)',
-                          }}
-                        >
-                          <Typography
-                            variant="h4"
-                            sx={{
-                              mb: 0.5,
-                              color: 'var(--color-text-primary)',
-                              fontWeight: 600,
-                            }}
-                          >
-                            Mouse Tissue Data
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              color: 'var(--color-text-secondary)',
-                              fontSize: '0.95rem',
-                            }}
-                          >
-                            Click labeled tissues to download — {mouseTissues.length} datasets available
-                          </Typography>
-                        </Box>
-                        {!loading && (
-                          <AnatomyMap species="mouse" tissues={mouseTissues} />
-                        )}
-                      </Box>
-                    )}
-                  </Paper>
-                </motion.div>
-              </Grid>
+      {release && (
+        <Grid container spacing={3}>
+          {SPECIES.map((s) => (
+            <Grid size={{ xs: 12, md: 6 }} key={s} id={`downloads-${s}`} sx={{ scrollMarginTop: 90 }}>
+              <SpeciesDownloads release={release} species={s} catalog={s === 'human' ? human.data : mouse.data} />
             </Grid>
-          </motion.div>
-        </Container>
-      </Box>
-    </motion.div>
+          ))}
+        </Grid>
+      )}
+
+      <Section title="File format">
+        <Panel>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+            Every TSV has one row per gene and these columns (lines starting with # are comments):
+          </Typography>
+          <TableContainer>
+            <Table size="small">
+              <TableBody>
+                {[
+                  ['Gene_ID', 'Ensembl gene', 'ENSG00000165572'],
+                  ['Transcript_ID', 'Ensembl transcript (the single isoform)', 'ENST00000379485'],
+                  ['Gene_Symbol', 'HGNC / MGI symbol', 'KBTBD6'],
+                  ['EntrezGene_ID', 'NCBI Gene', '89890'],
+                  ['RefSeq_mRNA_ID', 'RefSeq transcript', 'NM_152903'],
+                  ['RefSeq_Protein_ID', 'RefSeq protein', 'NP_690867'],
+                ].map(([col, what, ex]) => (
+                  <TableRow key={col}>
+                    <TableCell>
+                      <Mono>{col}</Mono>
+                    </TableCell>
+                    <TableCell>{what}</TableCell>
+                    <TableCell>
+                      <Mono>{ex}</Mono>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Files of the paper release keep their original addresses, for example{' '}
+            <Mono wrap>https://tusco.uv.es/data/human/tusco_human.tsv</Mono>. Newer releases live under{' '}
+            <Mono wrap>/data/releases/&lt;release&gt;/</Mono>.
+          </Typography>
+        </Panel>
+      </Section>
+
+      {index && (
+        <Section title="All releases">
+          <Panel padded={false}>
+            <TableContainer>
+              <Table aria-label="Releases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Release</TableCell>
+                    <TableCell>Human</TableCell>
+                    <TableCell>Mouse</TableCell>
+                    <TableCell />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {index.releases.map((r) => (
+                    <TableRow key={r.id} selected={r.id === release?.id}>
+                      <TableCell>
+                        <Typography sx={{ fontWeight: 650 }}>{r.id}</Typography>
+                        <Typography variant="caption">{r.name}</Typography>
+                        {r.id === index.current && <Chip label="current" size="small" color="primary" sx={{ ml: 1, height: 20 }} />}
+                      </TableCell>
+                      <TableCell>{r.species.human.annotation.slice(0, 1).join(', ')}</TableCell>
+                      <TableCell>{r.species.mouse.annotation.slice(0, 1).join(', ')}</TableCell>
+                      <TableCell align="right">
+                        {r.id !== release?.id && (
+                          <Button size="small" onClick={() => setRelease(r.id)}>
+                            Show files
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Panel>
+        </Section>
+      )}
+    </Page>
   );
 };
 

@@ -1,0 +1,251 @@
+{
+  "current": "2026.10",
+  "releases": [
+    {
+      "id": "2026.10",
+      "name": "GENCODE v50 update",
+      "date": "2026-10-27",
+      "previous": "2025.10",
+      "summary": "Gene sets rebuilt on GENCODE v50 (human) and vM39 (mouse). GENCODE added long-read isoforms to many genes of the paper release, so these genes are no longer single-isoform. Thresholds were relaxed to replace them and to add multi-exon genes, and genes without an AlphaGenome prediction are now judged on Bgee expression instead of being left out.",
+      "species": {
+        "human": {
+          "dir": "releases/2026.10/human",
+          "annotation": [
+            "GENCODE v50",
+            "RefSeq GRCh38.p14 (RS_2025_08)",
+            "MANE Select 1.5",
+            "Ensembl 116 BioMart"
+          ],
+          "expression": [
+            "Bgee 15.2",
+            "GTEx v10",
+            "AlphaGenome",
+            "HRT Atlas"
+          ],
+          "funnel": [
+            {
+              "step": "Single isoform, identical in GENCODE, RefSeq and MANE",
+              "n": 1449
+            },
+            {
+              "step": "No alternative TSS (refTSS) or novel junction above 5% (recount3)",
+              "n": 862
+            },
+            {
+              "step": "No alternative splicing in IntroVerse",
+              "n": 859
+            },
+            {
+              "step": "Expressed in ≥95% of Bgee tissues and passes AlphaGenome (or, without a prediction, Bgee score ≥55)",
+              "n": 62
+            },
+            {
+              "step": "After the curated exclusion list",
+              "n": 60
+            }
+          ],
+          "changes": "changes_vs_published.tsv",
+          "settings": [
+            {
+              "name": "Annotation",
+              "value": "GENCODE v50, MANE 1.5, Ensembl 116",
+              "previous": "GENCODE v49, MANE 1.4, Ensembl 115"
+            },
+            {
+              "name": "GENCODE copies of MANE transcripts with long-read-extended ends",
+              "value": "not counted as isoforms",
+              "previous": "did not exist"
+            },
+            {
+              "name": "Novel junction threshold (recount3), multi-exon genes",
+              "value": "5% of annotated coverage",
+              "previous": "1% of annotated coverage"
+            },
+            {
+              "name": "Genes without an AlphaGenome prediction",
+              "value": "kept if their median Bgee expression score is ≥55",
+              "previous": "removed"
+            },
+            {
+              "name": "AlphaGenome median expression, universal set",
+              "value": "≥ 0.25 / 0.1 RPKM (single / multi-exon)",
+              "previous": "≥ 1.0 RPKM"
+            },
+            {
+              "name": "AlphaGenome prevalence, multi-exon genes",
+              "value": "≥ 85% of tissues",
+              "previous": "≥ 95% of tissues"
+            },
+            {
+              "name": "AlphaGenome splice purity",
+              "value": "≥ 0.85",
+              "previous": "≥ 0.95"
+            },
+            {
+              "name": "AlphaGenome expression, tissue sets",
+              "value": "> 0.5 RPKM",
+              "previous": "> 2.0 RPKM"
+            },
+            {
+              "name": "Bgee prevalence, universal set",
+              "value": "≥ 95% of tissues",
+              "previous": "≥ 95% of tissues"
+            }
+          ]
+        },
+        "mouse": {
+          "dir": "releases/2026.10/mouse",
+          "annotation": [
+            "GENCODE vM39",
+            "RefSeq GRCm39 (RS_2024_02)",
+            "Ensembl 116 BioMart"
+          ],
+          "expression": [
+            "Bgee 15.2",
+            "ENCODE (kidney)",
+            "AlphaGenome",
+            "HRT Atlas"
+          ],
+          "funnel": [
+            {
+              "step": "Single isoform, matching in GENCODE and RefSeq",
+              "n": 1053
+            },
+            {
+              "step": "No novel junction above 5% (recount3)",
+              "n": 931
+            },
+            {
+              "step": "Expressed in ≥90% of Bgee tissues and passes AlphaGenome (or, without a prediction, Bgee score ≥55)",
+              "n": 52
+            },
+            {
+              "step": "After the curated exclusion list",
+              "n": 52
+            }
+          ],
+          "changes": "changes_vs_published.tsv",
+          "settings": [
+            {
+              "name": "Annotation",
+              "value": "GENCODE vM39, Ensembl 116",
+              "previous": "GENCODE vM38, Ensembl 115"
+            },
+            {
+              "name": "Transcript ends, GENCODE vs RefSeq",
+              "value": "may differ by up to 5 bp (single-exon) or 100 bp (multi-exon, same intron chain)",
+              "previous": "must be identical"
+            },
+            {
+              "name": "Gene types",
+              "value": "protein-coding only, no mitochondrial genes",
+              "previous": "all, including immunoglobulin and T-cell receptor segments"
+            },
+            {
+              "name": "refTSS check",
+              "value": "none",
+              "previous": "single-exon genes, whole exon"
+            },
+            {
+              "name": "Genes without an AlphaGenome prediction",
+              "value": "kept if their median Bgee expression score is ≥55",
+              "previous": "removed"
+            },
+            {
+              "name": "AlphaGenome median expression, multi-exon genes",
+              "value": "≥ 0.0625 RPKM",
+              "previous": "≥ 0.25 RPKM"
+            },
+            {
+              "name": "AlphaGenome expression, tissue sets",
+              "value": "> 0.375 RPKM",
+              "previous": "> 1.5 RPKM"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "2025.10",
+      "name": "Paper release",
+      "date": "2025-10-13",
+      "previous": null,
+      "summary": "The gene sets described in the TUSCO article (Nature Communications 17, 5654, 2026; doi.org/10.1038/s41467-026-72089-1) and shipped with SQANTI3, built on GENCODE v49 (human) and vM38 (mouse). The files keep their original addresses under /data/human and /data/mouse.",
+      "species": {
+        "human": {
+          "dir": "human",
+          "annotation": [
+            "GENCODE v49",
+            "RefSeq GRCh38.p14 (RS_2025_08)",
+            "MANE Select 1.4",
+            "Ensembl 115 BioMart"
+          ],
+          "expression": [
+            "Bgee 15.2",
+            "GTEx v10",
+            "AlphaGenome",
+            "HRT Atlas"
+          ],
+          "funnel": [
+            {
+              "step": "Single isoform, identical in GENCODE, RefSeq and MANE",
+              "n": 1617
+            },
+            {
+              "step": "No alternative TSS (refTSS) or novel junction (recount3)",
+              "n": 786
+            },
+            {
+              "step": "No alternative splicing in IntroVerse",
+              "n": 783
+            },
+            {
+              "step": "Expressed in ≥95% of Bgee tissues and passes AlphaGenome",
+              "n": 48
+            },
+            {
+              "step": "After the curated exclusion list",
+              "n": 46
+            }
+          ],
+          "changes": null,
+          "settings": []
+        },
+        "mouse": {
+          "dir": "mouse",
+          "annotation": [
+            "GENCODE vM38",
+            "RefSeq GRCm39 (RS_2024_02)",
+            "Ensembl 115 BioMart"
+          ],
+          "expression": [
+            "Bgee 15.2",
+            "ENCODE (kidney)",
+            "AlphaGenome",
+            "HRT Atlas"
+          ],
+          "funnel": [
+            {
+              "step": "Single isoform, identical in GENCODE and RefSeq",
+              "n": 910
+            },
+            {
+              "step": "No alternative TSS (refTSS) or novel junction (recount3)",
+              "n": 704
+            },
+            {
+              "step": "Expressed in ≥90% of Bgee tissues and passes AlphaGenome",
+              "n": 33
+            },
+            {
+              "step": "After the curated exclusion list",
+              "n": 32
+            }
+          ],
+          "changes": null,
+          "settings": []
+        }
+      }
+    }
+  ]
+}

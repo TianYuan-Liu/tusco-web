@@ -2813,7 +2813,7 @@
 	<text transform="matrix(1 0 0 1 25.1963 37.0481)" font-family="'ArialMT'" font-size="5px">Putamen basal ganglia </text>
 </g>
 <g>
-	<text transform="matrix(1 0 0 1 50.4995 57.0906)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="5px">Cerebellum </tspan><tspan x="-27.234" y="6" font-family="'ArialMT'" font-size="5px">Cterebellar Hemisphere </tspan></text>
+	<text transform="matrix(1 0 0 1 50.4995 57.0906)"><tspan x="0" y="0" font-family="'ArialMT'" font-size="5px">Cerebellum </tspan><tspan x="-27.234" y="6" font-family="'ArialMT'" font-size="5px">Cerebellar Hemisphere </tspan></text>
 </g>
 <g>
 	<text transform="matrix(1 0 0 1 59.3938 72.3763)" font-family="'ArialMT'" font-size="5px">Pituitary</text>

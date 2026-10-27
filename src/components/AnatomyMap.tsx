@@ -1,20 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import { linkSvgTextLabels, normalizeLabel } from '../utils/svgTextLinker';
+import { Box, LinearProgress } from '@mui/material';
+import { linkSvgTextLabels, normalizeLabel, setSelectedTissue } from '../utils/svgTextLinker';
 
 type Species = 'human' | 'mouse';
 
 interface TissueData {
   tissueName: string;
-  uberonId: string;
   filename: string;
   originalFile: string;
-  size: string;
 }
 
 interface AnatomyMapProps {
   species: Species;
-  tissues: TissueData[];
+  tissues: { name: string; tsv: string }[];
+  base: string;
+  selected: string | null;
+  onSelect: (slug: string) => void;
 }
 
 // Helper to derive available slugs from server-provided tissue list
@@ -35,14 +36,20 @@ const buildAvailableSlugSet = (species: Species, tissues: TissueData[]): Set<str
   return set;
 };
 
-const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
+const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues: catalogTissues, base, selected, onSelect }) => {
+  const tissues: TissueData[] = useMemo(
+    () => catalogTissues.map((t) => ({ tissueName: t.name, filename: t.tsv, originalFile: t.tsv })),
+    [catalogTissues]
+  );
   const [svgMarkup, setSvgMarkup] = useState<string>('');
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
   const svgUrl = useMemo(() => {
     return species === 'human'
-      ? '/data/human_body_map.svg'
-      : '/data/mouse_body_map.svg';
+      ? '/data/human_body_map.svg?v=2026.10'
+      : '/data/mouse_body_map.svg?v=2026.10';
   }, [species]);
 
   useEffect(() => {
@@ -63,6 +70,8 @@ const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
   useEffect(() => {
     if (!svgMarkup || !containerRef.current) return;
     const container = containerRef.current;
+    // Start from the pristine drawing each time, so labels are never linked twice
+    container.innerHTML = svgMarkup;
     const svg = container.querySelector('svg') as SVGSVGElement | null;
     if (!svg) return;
 
@@ -156,66 +165,47 @@ const AnatomyMap: React.FC<AnatomyMapProps> = ({ species, tissues }) => {
     addAlias('skeletal muscle', getSlugFromName('tusco_mouse_skeletal_muscle_tissue.tsv'));
 
     // The linker only wraps <text> with <a>; no other DOM/style changes.
-    linkSvgTextLabels(svg, species, available, alias);
+    linkSvgTextLabels(svg, species, available, alias, base);
+    setSelectedTissue(svg, selectedRef.current);
 
-    // Intercept anchor clicks within the SVG to force download in dev (port 3000)
-    const handleAnchorClick = async (ev: MouseEvent) => {
+    // A click on a linked label selects that tissue instead of following the link
+    const handleAnchorClick = (ev: MouseEvent) => {
       const target = ev.target as Element | null;
-      if (!target) return;
-      const anchor = target.closest('a') as Element | null;
-      if (!anchor) return;
-      // Only handle anchors inside our container's SVG
-      if (!container.contains(anchor)) return;
-      const href = anchor.getAttribute('href') || (anchor as any).href || anchor.getAttribute('xlink:href');
-      if (!href) return;
-      const downloadName = anchor.getAttribute('download') || '';
-
-      // Prevent navigation; fetch and trigger a download programmatically
+      const anchor = target?.closest('a');
+      if (!anchor || !container.contains(anchor)) return;
+      const slug = anchor.querySelector('[data-tissue-slug]')?.getAttribute('data-tissue-slug');
+      if (!slug) return;
       ev.preventDefault();
-      try {
-        const res = await fetch(href);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        // Use a transient anchor outside the SVG; does not affect SVG layout/styles
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        if (downloadName) a.download = downloadName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
-      } catch (e) {
-        // As a fallback, allow normal navigation
-        window.location.href = href;
-      }
+      onSelect(slug);
     };
 
     container.addEventListener('click', handleAnchorClick);
     return () => {
       container.removeEventListener('click', handleAnchorClick);
     };
-  }, [svgMarkup, tissues, species]);
+  }, [svgMarkup, tissues, species, base, onSelect]);
+
+  // Highlight the selected tissue (label, connector and organ) without relinking the drawing
+  useEffect(() => {
+    const svg = containerRef.current?.querySelector('svg') as SVGSVGElement | null;
+    if (svg) setSelectedTissue(svg, selected);
+  }, [selected]);
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Typography variant="subtitle2" sx={{ mb: 1, color: '#475569' }}>
-        Click a labeled tissue on the map to download its TSV.
-      </Typography>
-      <Box
-        ref={containerRef}
-        sx={{
-          width: '100%',
-          maxWidth: '100%',
-          overflowX: 'auto',
-          border: '1px solid rgba(15, 23, 42, 0.08)',
-          borderRadius: 1,
-          background: '#fff',
-        }}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: svgMarkup }}
-      />
-    </Box>
+    <>
+    {!svgMarkup && <LinearProgress sx={{ my: 2 }} aria-label="Loading the body map" />}
+    <Box
+      ref={containerRef}
+      sx={{
+        width: '100%',
+        overflowX: 'auto',
+        borderRadius: 2,
+        backgroundColor: '#ffffff', // the illustration is drawn for a white background
+        p: 1,
+        '& svg': { width: '100%', height: 'auto', display: 'block', overflow: 'visible' },
+      }}
+    />
+    </>
   );
 };
 

@@ -1,0 +1,74 @@
+gene_id	gene_symbol	status	exons	note
+ENSG00000173013	CFAP184	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000175040	CHST2	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000175315	CST6	new	3	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000197191	CYSRT1	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000214447	FAM187A	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000174721	FGFBP3	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000112599	GUCA1B	new	4	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000186603	HPDL	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000173110	HSPA6	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000163083	INHBB	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000185950	IRS2	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000263874	LASP1NB	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000170191	NANP	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000187566	NHLRC1	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000235961	PNMA6A	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000145337	PYURF	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000174236	REP15	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000136514	RTP4	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000267534	S1PR2	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000196972	SMIM10L2B	new	2	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000164736	SOX17	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000177688	SUMO4	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000127366	TAS2R5	new	1	single-exon; AlphaGenome median RPKM between 0.25 and 1.0 (passes after lowering the 1.0 cutoff)
+ENSG00000163794	UCN	new	2	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000175073	VCPIP1	new	3	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000105708	ZNF14	new	4	multi-exon; novel junctions in recount3 between 1% and 5% of the annotated coverage (the new limit for this release)
+ENSG00000170684	ZNF296	new	3	multi-exon; passes the lowered AlphaGenome thresholds for multi-exon genes
+ENSG00000176020	AMIGO3	kept	1	
+ENSG00000176022	B3GALT6	kept	1	
+ENSG00000186222	BLOC1S4	kept	1	
+ENSG00000204439	C6orf47	kept	1	
+ENSG00000135045	C9orf40	kept	2	
+ENSG00000175602	CCDC85B	kept	1	
+ENSG00000182810	DDX28	kept	1	
+ENSG00000255423	EBLN2	kept	1	
+ENSG00000120738	EGR1	kept	2	
+ENSG00000223496	EXOSC6	kept	1	
+ENSG00000127920	GNG11	kept	2	
+ENSG00000183598	H3C13	kept	1	
+ENSG00000182700	IGIP	kept	1	
+ENSG00000170604	IRF2BP1	kept	1	
+ENSG00000165572	KBTBD6	kept	1	
+ENSG00000105617	LENG1	kept	4	
+ENSG00000155858	LSM11	kept	4	
+ENSG00000247626	MARS2	kept	1	
+ENSG00000270170	NCBP2AS2	kept	1	
+ENSG00000182636	NDN	kept	1	
+ENSG00000262664	OVCA2	kept	2	
+ENSG00000221821	PEX39	kept	1	
+ENSG00000213402	PTPRCAP	kept	2	
+ENSG00000173456	RNF26	kept	1	
+ENSG00000188636	RTL6	kept	2	
+ENSG00000205138	SDHAF1	kept	1	
+ENSG00000179918	SEPHS2	kept	1	
+ENSG00000169976	SF3B5	kept	1	
+ENSG00000198142	SOWAHC	kept	1	
+ENSG00000176422	SPRYD4	kept	2	
+ENSG00000179886	TIGD5	kept	1	
+ENSG00000204366	ZBTB12	kept	2	
+ENSG00000183779	ZNF703	kept	2	
+ENSG00000168792	ABHD15	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000162817	C1orf115	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000176396	EID2	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000146066	HIGD2A	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000185085	INTS5	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000182154	MRPL41	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000136897	MRPL50	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000196368	NUDT11	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000280789	PAGR1	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000170385	SLC30A1	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000124216	SNAI1	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000118804	STBD1	dropped		gained a long-read (TAGENE) isoform in GENCODE v50
+ENSG00000170027	YWHAG	dropped		gained a long-read (TAGENE) isoform in GENCODE v50

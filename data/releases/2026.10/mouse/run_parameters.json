@@ -1,0 +1,59 @@
+{
+  "encode_tissues": [
+    "kidney"
+  ],
+  "expression_source": "bgee",
+  "species": "mmu",
+  "thresholds": {
+    "expression": {
+      "alphagenome": {
+        "tissue_specific": {
+          "expression_threshold": 0.375,
+          "splice_ratio_threshold": 0.001
+        },
+        "universal": {
+          "keep_missing": true,
+          "missing_bgee_score": 55.0,
+          "multi_exon_expression_threshold": 0.005,
+          "multi_exon_median_rpkm_threshold": 0.0625,
+          "multi_exon_prevalence_threshold": 0.9,
+          "single_exon_expression_threshold": 0.01,
+          "single_exon_median_rpkm_threshold": 0.5,
+          "single_exon_prevalence_threshold": 0.9,
+          "splice_purity_threshold": 0.9,
+          "splice_ratio_threshold": 0.01
+        }
+      },
+      "bgee": {
+        "min_genes_per_tissue": 25000,
+        "prevalence_threshold": 0.9,
+        "qual_ok": [
+          "gold quality",
+          "silver quality"
+        ]
+      },
+      "encode": {
+        "median_expression_cutoff": 1.0,
+        "prevalence_expression_cutoff": 0.1,
+        "prevalence_threshold": 0.95
+      },
+      "gtex": {
+        "median_expression_cutoff": 1.0,
+        "prevalence_expression_cutoff": 0.1,
+        "prevalence_threshold": 0.95
+      }
+    },
+    "single_isoform": {
+      "end_tolerance": 5,
+      "exclude_mitochondrial": true,
+      "multi_exon_end_tolerance": 100,
+      "protein_coding_only": true
+    },
+    "splice_tss": {
+      "min_novel_length": 80,
+      "novel_threshold": 0.05,
+      "tss_region_bp": 300,
+      "tss_scope": "none"
+    }
+  }
+}
