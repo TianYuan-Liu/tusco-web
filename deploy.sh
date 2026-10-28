@@ -11,7 +11,7 @@ echo "🚀 Starting TUSCO Web deployment..."
 APP_NAME="tusco-web"
 APP_DIR="/home/tian/$APP_NAME"
 SERVICE_NAME="tusco-web"
-NODE_VERSION="18"
+NODE_VERSION="22"
 
 # Colors for output
 RED='\033[0;31m'
